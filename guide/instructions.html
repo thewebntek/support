@@ -47,8 +47,9 @@ p.lead { margin:0; color:var(--muted); }
 .step-icon { position: absolute; left: -30px; top:0; background: var(--accent); color:#001018; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; box-shadow:0 0 10px rgba(125,211,252,0.4); }
 .step-title { font-size:1.2rem; font-weight:700; margin-bottom:6px; color:var(--accent); }
 
-button.next-btn {
+button.next-btn, button.back-btn, button.exit-btn {
   margin-top:12px; padding:6px 12px; border-radius:8px; background:var(--accent-2); color:#001018; font-weight:700; border:none; cursor:pointer;
+  margin-right: 8px;
 }
 
 footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; color:var(--muted); font-size:0.95rem; }
@@ -103,11 +104,11 @@ footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; c
     <h3>Select Your Provider</h3>
     <select id="provider-select">
       <option value="">-- Choose Provider --</option>
-      <option value="https://smart4k.me">Smart4K</option>
-      <option value="https://tv.stream4k.cc">Stream4K</option>
       <option value="https://glotv.me">Glotv</option>
-      <option value="http://sky.dittotvv.cc">Sky</option>
       <option value="https://p1.airce.io">Gold/Global</option>
+      <option value="https://smart4k.me">Smart4K</option>
+      <option value="http://sky.dittotvv.cc">Sky</option>
+      <option value="https://tv.stream4k.cc">Stream4K</option>
     </select>
     <button id="provider-confirm">Confirm</button>
   </div>
@@ -165,29 +166,44 @@ function renderSteps(app){
     div.innerHTML=`<div class="step-icon">${step.icon}</div>
       <div class="step-title">${step.title}</div>
       ${step.content}
+      ${i>0?'<button class="back-btn">Back</button>':''}
       <button class="next-btn">Next</button>`;
     timeline.appendChild(div);
   });
   setupNextButtons(app);
 }
 
-// Setup Next buttons with smooth scrolling and highlight
+// Setup Next and Back buttons
 function setupNextButtons(app){
   const steps = timeline.querySelectorAll('.step');
   steps.forEach((step,i)=>{
-    const btn = step.querySelector('.next-btn');
-    btn.addEventListener('click',()=>{
-      step.classList.remove('active');
-      const nextStep = steps[i+1];
-      if(nextStep){
-        nextStep.classList.add('active','highlight');
-        nextStep.scrollIntoView({behavior:'smooth', block:'center'});
-        setTimeout(()=> nextStep.classList.remove('highlight'),1500);
-      } else {
-        // Show provider modal after main steps
-        document.getElementById('provider-modal').style.display='flex';
-      }
-    });
+    const nextBtn = step.querySelector('.next-btn');
+    if(nextBtn){
+      nextBtn.addEventListener('click',()=>{
+        step.classList.remove('active');
+        const nextStep = steps[i+1];
+        if(nextStep){
+          nextStep.classList.add('active','highlight');
+          nextStep.scrollIntoView({behavior:'smooth', block:'center'});
+          setTimeout(()=> nextStep.classList.remove('highlight'),1500);
+        } else {
+          // Show provider modal after main steps
+          document.getElementById('provider-modal').style.display='flex';
+        }
+      });
+    }
+    const backBtn = step.querySelector('.back-btn');
+    if(backBtn){
+      backBtn.addEventListener('click',()=>{
+        step.classList.remove('active');
+        const prevStep = steps[i-1];
+        if(prevStep){
+          prevStep.classList.add('active','highlight');
+          prevStep.scrollIntoView({behavior:'smooth', block:'center'});
+          setTimeout(()=> prevStep.classList.remove('highlight'),1500);
+        }
+      });
+    }
   });
 }
 
@@ -221,7 +237,7 @@ document.getElementById('provider-confirm').addEventListener('click',()=>{
         <li><b>Launch App:</b> Open STB Emu.</li>
         <li><b>Select Profile:</b> Choose your created profile.</li>
         <li><b>Start Streaming:</b> You should be able to stream content.</li>
-        <li><b>Attention:</b> Ensure Portal URL and MAC address are correct.</li>
+        <li><button class="exit-btn" onclick="window.location.href='https://google.com'">Exit</button></li>
       </ol>
     </div>`;
   } else if(selectedApp==='tivimate'){
@@ -237,10 +253,10 @@ document.getElementById('provider-confirm').addEventListener('click',()=>{
         <li><b>Provide MAC Address:</b> Enter MAC from app <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span>.</li>
         <li><b>Process Playlist:</b> Click Next → Done message shown.</li>
         <li>Note: TiviMate requires a premium subscription. Upgrade: <a href="https://tivimate.com" target="_blank" style="color:var(--accent)">TiviMate Premium</a></li>
+        <li><button class="exit-btn" onclick="window.location.href='https://google.com'">Exit</button></li>
       </ol>
     </div>`;
   }
-  // Auto-scroll to newly added config step
   const lastStep = timeline.querySelector('.step.active');
   lastStep.scrollIntoView({behavior:'smooth', block:'center'});
 });
