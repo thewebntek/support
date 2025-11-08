@@ -25,7 +25,7 @@ body.light {
   color:#111;
 }
 * { box-sizing:border-box; }
-html,body { height:100%; margin:0; background:var(--bg); color:#e6eef6; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,"Helvetica Neue",Arial; transition: all 0.3s ease; }
+html,body { height:100%; margin:0; background:var(--bg); color:#e6eef6; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,"Helvetica Neue",Arial; transition: all 0.3s ease; scroll-behavior: smooth; }
 .container { max-width:var(--max-width); margin:28px auto; padding:20px; }
 
 header {
@@ -34,7 +34,7 @@ header {
   backdrop-filter: blur(6px);
 }
 .logo { width:auto; text-align:center; padding:0 2ch; height:44px; border-radius:10px; background: linear-gradient(135deg,var(--accent),var(--accent-2)); display:flex; align-items:center; justify-content:center; font-weight:700; color:#022; box-shadow:0 4px 18px rgba(125,211,252,0.08);}
-.theme-toggle { cursor:pointer; padding:6px 10px; border-radius:8px; background: var(--accent-2); color:#001018; font-weight:600; }
+.theme-toggle { cursor:pointer; font-size:20px; }
 
 h1,h2 { margin:0 0 10px 0; }
 p.lead { margin:0; color:var(--muted); }
@@ -74,7 +74,7 @@ footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; c
 <body>
 <header>
   <div class="logo">  WebNTek  </div>
-  <div class="theme-toggle" id="theme-toggle">Toggle Theme</div>
+  <div class="theme-toggle" id="theme-toggle">☀️</div>
 </header>
 
 <div class="container">
@@ -82,7 +82,8 @@ footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; c
 <section class="card" id="setup-guide" style="margin-top:20px;padding:24px;line-height:1.6">
 <h2 style="margin-top:0">🔥 Firestick Setup Guide</h2>
 
-<div id="app-modal" class="modal-bg" style="display:flex;">
+<!-- App selection modal -->
+<div id="app-modal" class="modal-bg">
   <div class="modal">
     <h3>Select App to Install</h3>
     <select id="app-select">
@@ -94,9 +95,8 @@ footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; c
   </div>
 </div>
 
-<div class="timeline" id="timeline"></div>
-
-<div id="provider-modal" class="modal-bg">
+<!-- Provider selection modal -->
+<div id="provider-modal" class="modal-bg" style="display:none;">
   <div class="modal">
     <h3>Select Your Provider</h3>
     <select id="provider-select">
@@ -110,6 +110,9 @@ footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; c
     <button id="provider-confirm">Confirm</button>
   </div>
 </div>
+
+<div class="timeline" id="timeline"></div>
+
 </section>
 </main>
 
@@ -120,10 +123,17 @@ footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; c
 
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
-document.getElementById('theme-toggle').addEventListener('click',()=>document.body.classList.toggle('light'));
 
+// Theme toggle
+const themeToggle = document.getElementById('theme-toggle');
+themeToggle.addEventListener('click',()=>{
+  document.body.classList.toggle('light');
+  themeToggle.textContent = document.body.classList.contains('light') ? '🌙' : '☀️';
+});
+
+// Timeline logic
 const timeline = document.getElementById('timeline');
-let selectedApp = '';
+let selectedApp='';
 
 const stepsData = {
   stbemu:[
@@ -135,10 +145,11 @@ const stepsData = {
   ],
   tivimate:[
     {icon:'1', title:'Download TiviMate App', content:`<ol><li>Use <b>Downloader</b> app to install TiviMate.</li></ol>`},
-    {icon:'2', title:'Setup Stalker Portal', content:`<p>Will show after provider selection.</p>`}
+    {icon:'2', title:'Setup Stalker Portal', content:`<p>Instructions will show after provider selection.</p>`}
   ]
 };
 
+// Render steps
 function renderSteps(app){
   timeline.innerHTML='';
   const steps = stepsData[app];
@@ -155,6 +166,7 @@ function renderSteps(app){
   setupNextButtons(app);
 }
 
+// Setup Next buttons with smooth scrolling
 function setupNextButtons(app){
   const steps = timeline.querySelectorAll('.step');
   steps.forEach((step,i)=>{
@@ -164,15 +176,17 @@ function setupNextButtons(app){
       if(i<steps.length-1){
         const nextStep = steps[i+1];
         nextStep.classList.add('active','highlight');
-        nextStep.scrollIntoView({behavior:'smooth'});
+        nextStep.scrollIntoView({behavior:'smooth', block:'center'});
         setTimeout(()=> nextStep.classList.remove('highlight'),1500);
       } else {
-        providerModal.style.display='flex';
+        // Show provider modal after main steps
+        document.getElementById('provider-modal').style.display='flex';
       }
     });
   });
 }
 
+// App selection
 document.getElementById('app-confirm').addEventListener('click',()=>{
   selectedApp=document.getElementById('app-select').value;
   if(!selectedApp) return;
@@ -180,11 +194,10 @@ document.getElementById('app-confirm').addEventListener('click',()=>{
   renderSteps(selectedApp);
 });
 
-const providerModal=document.getElementById('provider-modal');
-const providerSelect=document.getElementById('provider-select');
+// Provider selection
 document.getElementById('provider-confirm').addEventListener('click',()=>{
-  const portalURL = providerSelect.value || "[No provider selected]";
-  providerModal.style.display='none';
+  const portalURL = document.getElementById('provider-select').value || "[No provider selected]";
+  document.getElementById('provider-modal').style.display='none';
   if(selectedApp==='stbemu'){
     timeline.innerHTML += `
     <div class="step active highlight">
