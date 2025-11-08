@@ -40,8 +40,9 @@ h1,h2 { margin:0 0 10px 0; }
 p.lead { margin:0; color:var(--muted); }
 
 .timeline { position: relative; margin: 20px 0; padding-left: 50px; border-left: 2px solid var(--accent-2); }
-.step { margin-bottom: 30px; position: relative; display:none; transition: background 0.3s ease; }
+.step { margin-bottom: 30px; position: relative; display:none; transition: background 0.3s ease, transform 0.3s ease; }
 .step.active { display:block; animation: highlightAnim 1s ease; }
+.step.highlight { background: rgba(125,211,252,0.1); border-radius:8px; padding:8px; }
 .step-icon { position: absolute; left: -30px; top:0; background: var(--accent); color:#001018; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; box-shadow:0 0 10px rgba(125,211,252,0.4); }
 .step-title { font-size:1.2rem; font-weight:700; margin-bottom:6px; color:var(--accent); }
 
@@ -61,7 +62,7 @@ footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; c
 .modal button { padding:8px 12px; border-radius:10px; background:var(--accent-2); color:#001018; font-weight:700; border:none; cursor:pointer; }
 
 @keyframes highlightAnim {
-  0% { background-color: rgba(125,211,252,0.1); }
+  0% { background-color: rgba(125,211,252,0.2); }
   100% { background-color: transparent; }
 }
 
@@ -135,24 +136,27 @@ themeToggle.addEventListener('click',()=>{
 const timeline = document.getElementById('timeline');
 let selectedApp='';
 
-const stepsData = {
-  stbemu:[
-    {icon:'1', title:'Access Developer Options', content:`<ol><li>Settings → My Fire TV → About → click device name until "You are now a developer".</li></ol>`},
-    {icon:'2', title:'Allow Apps from Unknown Sources', content:`<ol><li>Settings → Device / My Fire TV → Developer Options → toggle Apps from Unknown Sources on → confirm.</li></ol>`},
-    {icon:'3', title:'Download STBEmu App', content:`<p style="margin-top:-4px;color:var(--muted)"><i>Ensure <b>Downloader</b> app is installed.</i></p>
-    <ol><li>Open My Apps → Launch Downloader.</li>
-    <li>Enter code <b>3295550</b> or URL <a href="https://bit.ly/webtmate" target="_blank" style="color:var(--accent)">https://bit.ly/webtmate</a> → Go → Install → Done → Delete APK.</li></ol>`}
-  ],
-  tivimate:[
-    {icon:'1', title:'Download TiviMate App', content:`<ol><li>Use <b>Downloader</b> app to install TiviMate.</li></ol>`},
-    {icon:'2', title:'Setup Stalker Portal', content:`<p>Instructions will show after provider selection.</p>`}
-  ]
+const commonSteps = [
+  {icon:'1', title:'Access Developer Options', content:`<ol><li>Settings → My Fire TV → About → click device name until "You are now a developer".</li></ol>`},
+  {icon:'2', title:'Allow Apps from Unknown Sources', content:`<ol><li>Settings → Device / My Fire TV → Developer Options → toggle Apps from Unknown Sources on → confirm.</li></ol>`}
+];
+
+const appStepData = {
+  stbemu:{icon:'3', title:'Download STBEmu App', code:'9386189', url:'https://bit.ly/websmpro'},
+  tivimate:{icon:'3', title:'Download TiviMate App', code:'3295550', url:'https://bit.ly/webtmate'}
 };
 
-// Render steps
 function renderSteps(app){
   timeline.innerHTML='';
-  const steps = stepsData[app];
+  const steps = [...commonSteps, {
+    icon: appStepData[app].icon,
+    title: appStepData[app].title,
+    content: `<p style="margin-top:-4px;color:var(--muted)"><i>Ensure <b>Downloader</b> app is installed.</i></p>
+    <ol>
+      <li>Open My Apps → Launch Downloader.</li>
+      <li>Enter code <b>${appStepData[app].code}</b> or URL <a href="${appStepData[app].url}" target="_blank" style="color:var(--accent)">${appStepData[app].url}</a> → Go → Install → Done → Delete APK.</li>
+    </ol>`
+  }];
   steps.forEach((step,i)=>{
     const div=document.createElement('div');
     div.classList.add('step');
@@ -166,15 +170,15 @@ function renderSteps(app){
   setupNextButtons(app);
 }
 
-// Setup Next buttons with smooth scrolling
+// Setup Next buttons with smooth scrolling and highlight
 function setupNextButtons(app){
   const steps = timeline.querySelectorAll('.step');
   steps.forEach((step,i)=>{
     const btn = step.querySelector('.next-btn');
     btn.addEventListener('click',()=>{
       step.classList.remove('active');
-      if(i<steps.length-1){
-        const nextStep = steps[i+1];
+      const nextStep = steps[i+1];
+      if(nextStep){
         nextStep.classList.add('active','highlight');
         nextStep.scrollIntoView({behavior:'smooth', block:'center'});
         setTimeout(()=> nextStep.classList.remove('highlight'),1500);
@@ -222,7 +226,7 @@ document.getElementById('provider-confirm').addEventListener('click',()=>{
   } else if(selectedApp==='tivimate'){
     timeline.innerHTML += `
     <div class="step active highlight">
-      <div class="step-icon">3</div>
+      <div class="step-icon">4</div>
       <div class="step-title">How to configure TiviMate</div>
       <ol>
         <li><b>Open TiviMate:</b> Launch the TiviMate app on your device.</li>
