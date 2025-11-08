@@ -22,25 +22,26 @@ body.light {
   --muted:#555;
   --accent:#60a5fa;
   --accent-2:#22d3ee;
+  color:#111;
 }
 * { box-sizing:border-box; }
 html,body { height:100%; margin:0; background:var(--bg); color:#e6eef6; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,"Helvetica Neue",Arial; transition: all 0.3s ease; }
 .container { max-width:var(--max-width); margin:28px auto; padding:20px; }
 
 header {
-  display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px; border-radius:var(--radius);
+  display:flex; align-items:center; justify-content:space-between; padding:12px; border-radius:var(--radius);
   background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
   backdrop-filter: blur(6px);
 }
-.logo { width: 60px; text-align:center; padding:0 2ch; height:44px; border-radius:10px; background: linear-gradient(135deg,var(--accent),var(--accent-2)); display:flex; align-items:center; justify-content:center; font-weight:700; color:#022; box-shadow:0 4px 18px rgba(125,211,252,0.08);}
+.logo { width:auto; text-align:center; padding:0 2ch; height:44px; border-radius:10px; background: linear-gradient(135deg,var(--accent),var(--accent-2)); display:flex; align-items:center; justify-content:center; font-weight:700; color:#022; box-shadow:0 4px 18px rgba(125,211,252,0.08);}
 .theme-toggle { cursor:pointer; padding:6px 10px; border-radius:8px; background: var(--accent-2); color:#001018; font-weight:600; }
 
 h1,h2 { margin:0 0 10px 0; }
 p.lead { margin:0; color:var(--muted); }
 
 .timeline { position: relative; margin: 20px 0; padding-left: 50px; border-left: 2px solid var(--accent-2); }
-.step { margin-bottom: 30px; position: relative; display:none; }
-.step.active { display:block; }
+.step { margin-bottom: 30px; position: relative; display:none; transition: background 0.3s ease; }
+.step.active { display:block; animation: highlightAnim 1s ease; }
 .step-icon { position: absolute; left: -30px; top:0; background: var(--accent); color:#001018; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; box-shadow:0 0 10px rgba(125,211,252,0.4); }
 .step-title { font-size:1.2rem; font-weight:700; margin-bottom:6px; color:var(--accent); }
 
@@ -51,7 +52,7 @@ button.next-btn {
 footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; color:var(--muted); font-size:0.95rem; }
 
 .modal-bg {
-  position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display:none; justify-content:center; align-items:center; z-index:1000;
+  position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; z-index:1000;
 }
 .modal {
   background: var(--panel); padding:24px; border-radius:12px; max-width:400px; width:90%; text-align:center;
@@ -59,8 +60,10 @@ footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; c
 .modal select { width: 100%; padding:8px; border-radius:8px; margin:12px 0; }
 .modal button { padding:8px 12px; border-radius:10px; background:var(--accent-2); color:#001018; font-weight:700; border:none; cursor:pointer; }
 
-.highlight { animation: highlightAnim 1.5s ease; }
-@keyframes highlightAnim { 0% { background-color: rgba(125,211,252,0.1); } 100% { background-color: transparent; } }
+@keyframes highlightAnim {
+  0% { background-color: rgba(125,211,252,0.1); }
+  100% { background-color: transparent; }
+}
 
 @media(max-width:640px) {
   .timeline { padding-left:40px; }
@@ -79,13 +82,16 @@ footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; c
 <section class="card" id="setup-guide" style="margin-top:20px;padding:24px;line-height:1.6">
 <h2 style="margin-top:0">🔥 Firestick Setup Guide</h2>
 
-<div style="margin-bottom:16px;">
-  <label for="app-select" style="font-weight:600; color:var(--accent); margin-right:8px;">Select App:</label>
-  <select id="app-select">
-    <option value="">-- Choose App --</option>
-    <option value="stbemu">STBEmu</option>
-    <option value="tivimate">TiviMate</option>
-  </select>
+<div id="app-modal" class="modal-bg" style="display:flex;">
+  <div class="modal">
+    <h3>Select App to Install</h3>
+    <select id="app-select">
+      <option value="">-- Choose App --</option>
+      <option value="stbemu">STBEmu</option>
+      <option value="tivimate">TiviMate</option>
+    </select>
+    <button id="app-confirm">Confirm</button>
+  </div>
 </div>
 
 <div class="timeline" id="timeline"></div>
@@ -114,54 +120,36 @@ footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; c
 
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
-const themeToggle = document.getElementById('theme-toggle');
-themeToggle.addEventListener('click', () => document.body.classList.toggle('light'));
+document.getElementById('theme-toggle').addEventListener('click',()=>document.body.classList.toggle('light'));
 
-const appSelect = document.getElementById('app-select');
 const timeline = document.getElementById('timeline');
-const providerModal = document.getElementById('provider-modal');
-const providerSelect = document.getElementById('provider-select');
-const providerConfirm = document.getElementById('provider-confirm');
-
 let selectedApp = '';
 
 const stepsData = {
-  stbemu: [
-    {
-      icon: '1', title:'Access Developer Options', content:`<ol><li>Go to <b>Settings</b> → <b>My Fire TV</b> → <b>About</b> → click device name until "You are now a developer".</li></ol>`
-    },
-    {
-      icon: '2', title:'Allow Apps from Unknown Sources', content:`<ol><li>Settings → Device / My Fire TV → Developer Options → toggle Apps from Unknown Sources on → confirm.</li></ol>`
-    },
-    {
-      icon: '3', title:'Download STBEmu App', content:`<p style="margin-top:-4px;color:var(--muted)"><i>Ensure <b>Downloader</b> app is installed.</i></p>
-        <ol><li>Open <b>My Apps</b> → Launch <b>Downloader</b>.</li>
-        <li>Enter code <b>3295550</b> or URL <a href="https://bit.ly/webtmate" target="_blank" style="color:var(--accent)">https://bit.ly/webtmate</a> → Go → Install → Done → Delete APK.</li></ol>`
-    }
+  stbemu:[
+    {icon:'1', title:'Access Developer Options', content:`<ol><li>Settings → My Fire TV → About → click device name until "You are now a developer".</li></ol>`},
+    {icon:'2', title:'Allow Apps from Unknown Sources', content:`<ol><li>Settings → Device / My Fire TV → Developer Options → toggle Apps from Unknown Sources on → confirm.</li></ol>`},
+    {icon:'3', title:'Download STBEmu App', content:`<p style="margin-top:-4px;color:var(--muted)"><i>Ensure <b>Downloader</b> app is installed.</i></p>
+    <ol><li>Open My Apps → Launch Downloader.</li>
+    <li>Enter code <b>3295550</b> or URL <a href="https://bit.ly/webtmate" target="_blank" style="color:var(--accent)">https://bit.ly/webtmate</a> → Go → Install → Done → Delete APK.</li></ol>`}
   ],
-  tivimate: [
-    {
-      icon: '1', title:'Download TiviMate', content:`<ol><li>Use <b>Downloader</b> app to install TiviMate.</li></ol>`
-    },
-    {
-      icon: '2', title:'Setup Stalker Portal', content:`<p>Will show after provider selection.</p>`
-    }
+  tivimate:[
+    {icon:'1', title:'Download TiviMate App', content:`<ol><li>Use <b>Downloader</b> app to install TiviMate.</li></ol>`},
+    {icon:'2', title:'Setup Stalker Portal', content:`<p>Will show after provider selection.</p>`}
   ]
 };
 
-// Render steps with Next buttons
-function renderSteps(app) {
-  timeline.innerHTML = '';
+function renderSteps(app){
+  timeline.innerHTML='';
   const steps = stepsData[app];
   steps.forEach((step,i)=>{
-    const div = document.createElement('div');
+    const div=document.createElement('div');
     div.classList.add('step');
-    if(i===0) div.classList.add('active');
-    div.id = 'step'+(i+1);
-    div.innerHTML = `<div class="step-icon">${step.icon}</div>
+    if(i===0) div.classList.add('active','highlight');
+    div.innerHTML=`<div class="step-icon">${step.icon}</div>
       <div class="step-title">${step.title}</div>
       ${step.content}
-      <button class="next-btn">${i<steps.length-1?'Next':'Next'}</button>`;
+      <button class="next-btn">Next</button>`;
     timeline.appendChild(div);
   });
   setupNextButtons(app);
@@ -174,49 +162,53 @@ function setupNextButtons(app){
     btn.addEventListener('click',()=>{
       step.classList.remove('active');
       if(i<steps.length-1){
-        steps[i+1].classList.add('active');
-        steps[i+1].scrollIntoView({behavior:'smooth'});
+        const nextStep = steps[i+1];
+        nextStep.classList.add('active','highlight');
+        nextStep.scrollIntoView({behavior:'smooth'});
+        setTimeout(()=> nextStep.classList.remove('highlight'),1500);
       } else {
-        // Last installation step: open provider modal
-        providerModal.style.display = 'flex';
+        providerModal.style.display='flex';
       }
     });
   });
 }
 
-appSelect.addEventListener('change',()=>{
-  selectedApp = appSelect.value;
+document.getElementById('app-confirm').addEventListener('click',()=>{
+  selectedApp=document.getElementById('app-select').value;
   if(!selectedApp) return;
+  document.getElementById('app-modal').style.display='none';
   renderSteps(selectedApp);
 });
 
-providerConfirm.addEventListener('click',()=>{
+const providerModal=document.getElementById('provider-modal');
+const providerSelect=document.getElementById('provider-select');
+document.getElementById('provider-confirm').addEventListener('click',()=>{
   const portalURL = providerSelect.value || "[No provider selected]";
   providerModal.style.display='none';
   if(selectedApp==='stbemu'){
     timeline.innerHTML += `
-    <div class="step active" id="stb-config">
+    <div class="step active highlight">
       <div class="step-icon">4</div>
       <div class="step-title">How to configure STBEmu App</div>
       <ol>
         <li><b>Open STB Emu App:</b> Launch the STB Emu app on your Firestick.</li>
         <li><b>Settings & Profiles:</b> Press menu → Settings → Profiles.</li>
         <li><b>Create New Profile:</b> Click "New Profile".</li>
-        <li><b>Profile Name:</b> Enter any desired name and press OK.</li>
-        <li><b>Portal Settings:</b> Enter the Portal URL: <span style="color:#f87171;font-weight:700;">${portalURL}</span></li>
+        <li><b>Profile Name:</b> Enter name and press OK.</li>
+        <li><b>Portal Settings:</b> Enter Portal URL: <span style="color:#f87171;font-weight:700;">${portalURL}</span></li>
         <li><b>STB Configuration:</b> Set STB Model as MAG 254.</li>
         <li><b>Screen Resolution:</b> Choose Auto unless sure of TV resolution.</li>
         <li><b>MAC Address:</b> Note the MAC address displayed <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span>.</li>
         <li><b>Save & Exit:</b> Confirm settings and exit.</li>
-        <li><b>Launch App:</b> Open STB Emu and wait a few seconds.</li>
-        <li><b>Select Profile:</b> Choose your created profile from main menu.</li>
-        <li><b>Start Streaming:</b> You should be able to stream content now.</li>
+        <li><b>Launch App:</b> Open STB Emu.</li>
+        <li><b>Select Profile:</b> Choose your created profile.</li>
+        <li><b>Start Streaming:</b> You should be able to stream content.</li>
         <li><b>Attention:</b> Ensure Portal URL and MAC address are correct.</li>
       </ol>
     </div>`;
   } else if(selectedApp==='tivimate'){
     timeline.innerHTML += `
-    <div class="step active" id="tivi-config">
+    <div class="step active highlight">
       <div class="step-icon">3</div>
       <div class="step-title">How to configure TiviMate</div>
       <ol>
@@ -224,13 +216,12 @@ providerConfirm.addEventListener('click',()=>{
         <li><b>Access Settings:</b> From main menu, select Settings.</li>
         <li><b>Add Playlist:</b> Choose Add Playlist → Stalker Portal.</li>
         <li><b>Enter Stalker Portal URL:</b> <span style="color:#f87171;font-weight:700;">${portalURL}</span></li>
-        <li><b>Provide MAC Address:</b> Enter the MAC address from the app <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span>.</li>
-        <li><b>Process Playlist:</b> Click Next → Done message shown with channel count and playlist name.</li>
-        <li>Note: TiviMate requires a premium subscription. Upgrade here: <a href="https://tivimate.com" target="_blank" style="color:var(--accent)">TiviMate Premium</a></li>
+        <li><b>Provide MAC Address:</b> Enter MAC from app <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span>.</li>
+        <li><b>Process Playlist:</b> Click Next → Done message shown.</li>
+        <li>Note: TiviMate requires a premium subscription. Upgrade: <a href="https://tivimate.com" target="_blank" style="color:var(--accent)">TiviMate Premium</a></li>
       </ol>
     </div>`;
   }
-  document.querySelector('.step.active').scrollIntoView({behavior:'smooth'});
 });
 </script>
 </body>
