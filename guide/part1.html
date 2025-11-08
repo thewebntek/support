@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Basic Responsive Dark Theme</title>
+  <title>WebnTek Firestick Setup Guide</title>
   <style>
     /* Inline CSS (embedded) - single-file dark theme */
     :root{
@@ -80,38 +80,61 @@
 
     <main>
       <section class="card" id="setup-guide" style="margin-top:20px;padding:24px;line-height:1.6">
-        <h2 style="margin-top:0">Firestick Setup Guide</h2>
+        <h2 style="margin-top:0">🔥 Firestick Setup Guide</h2>
 
-        <h3>Step 1: Access Developer Options</h3>
-        <ol>
-          <li>Go to <b>Settings</b> on your Firestick.</li>
-          <li>Scroll right to find <b>My Fire TV</b> and select it.</li>
-          <li>Choose <b>About</b> and click on your device name multiple times until a<br/>"<b>You are now a developer</b>" popup appears.</li>
-        </ol>
+        <style>
+          .timeline{position:relative;margin:20px 0;padding-left:28px;border-left:2px solid var(--accent-2)}
+          .step{margin-bottom:26px;position:relative}
+          .step-icon{position:absolute;left:-18px;top:0;background:var(--accent);color:#001018;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;box-shadow:0 0 10px rgba(125,211,252,0.4)}
+          .step-title{font-size:1.2rem;font-weight:700;margin-bottom:6px;color:var(--accent)}
+        </style>
 
-        <h3>Step 2: Allow Apps from Unknown Sources</h3>
-        <ol>
-          <li>From <b>Settings</b>, select <b>Device / My Fire TV</b>.</li>
-          <li>Navigate to <b>Developer options</b>.</li>
-          <li>Locate <b>Apps from Unknown Sources</b> and toggle it on.</li>
-          <li>Confirm your selection by clicking <b>Turn On</b>.</li>
-        </ol>
+        <div class="timeline">
 
-        <h3>Step 3: Download STB Emu App</h3>
-        <p style="margin-top:-4px;color:var(--muted)"><i>Before moving forward, please make sure you have installed the <b>Downloader</b> app (Orange Logo).</i></p>
-        <ol>
-          <li>On your FireStick home screen, click <b>My Apps</b>.</li>
-          <li>Navigate to the <b>Downloader</b> app and open it.</li>
-          <li>Click the URL box.</li>
-          <li>Enter the code <b>9386189</b> or type <a href="https://bit.ly/websmpro" style="color:var(--accent)" target="_blank"><b>https://bit.ly/websmpro</b></a> and click <b>Go</b>, then wait a few moments for the APK file to download.</li>
-          <li>Click <b>Install</b>.</li>
-          <li>Click <b>Done</b>.</li>
-          <li>Click <b>Delete</b> to remove the APK file from your FireStick.</li>
-          <li>Click <b>Delete</b> again to confirm.</li>
-        </ol>
+          <div class="step">
+            <div class="step-icon">1</div>
+            <div class="step-title">Access Developer Options</div>
+            <ol>
+              <li>Go to <b>Settings</b> on your Firestick.</li>
+              <li>Scroll right to find <b>My Fire TV</b> and select it.</li>
+              <li>Choose <b>About</b> and click your device name several times until <b>“You are now a developer”</b> appears.</li>
+            </ol>
+          </div>
 
-        <h3>Next Step</h3>
-        <p>Once these steps are completed, contact your provider to receive the next steps.</p>
+          <div class="step">
+            <div class="step-icon">2</div>
+            <div class="step-title">Allow Apps from Unknown Sources</div>
+            <ol>
+              <li>From <b>Settings</b>, select <b>Device / My Fire TV</b>.</li>
+              <li>Open <b>Developer Options</b>.</li>
+              <li>Toggle <b>Apps from Unknown Sources</b> on.</li>
+              <li>Confirm by clicking <b>Turn On</b>.</li>
+            </ol>
+          </div>
+
+          <div class="step">
+            <div class="step-icon">3</div>
+            <div class="step-title">Download STB Emu App</div>
+            <p style="margin-top:-4px;color:var(--muted)"><i>Make sure the <b>Downloader</b> app (orange logo) is installed.</i></p>
+            <ol>
+              <li>On your FireStick home screen, open <b>My Apps</b>.</li>
+              <li>Launch the <b>Downloader</b> app.</li>
+              <li>Click the URL box.</li>
+              <li>Enter the code <b>9386189</b> or type <a href="https://bit.ly/websmpro" style="color:var(--accent)" target="_blank"><b>https://bit.ly/websmpro</b></a> and click <b>Go</b> to download the APK.</li>
+              <li>Click <b>Install</b>.</li>
+              <li>Click <b>Done</b>.</li>
+              <li>Click <b>Delete</b> to remove the APK.</li>
+              <li>Click <b>Delete</b> again to confirm.</li>
+            </ol>
+          </div>
+
+          <div class="step">
+            <div class="step-icon">✅</div>
+            <div class="step-title">Next Step</div>
+            <p>Once all steps are completed, contact your provider to receive your service configuration.</p>
+          </div>
+
+        </div>
       </section>
     </main>
 
