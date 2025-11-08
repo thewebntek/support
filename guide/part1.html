@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>WebnTek Firestick Setup Guide</title>
   <style>
-    /* Inline CSS - Dark Theme */
     :root{
       --bg:#0b0f14;
       --panel:#0f1720;
@@ -26,7 +25,7 @@
     .brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:1.6rem}
     .logo{width:120px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:700;color:#001018;box-shadow:0 4px 18px rgba(125,211,252,0.08)}
 
-    /* Cards & main content */
+    /* Card */
     .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:24px;border-radius:var(--radius);line-height:1.6;margin-top:20px}
     h1,h2,h3{margin:0}
     h2{margin-bottom:16px}
@@ -44,10 +43,6 @@
     .step {
       margin-bottom: 40px;
       position: relative;
-      transition: transform 0.3s ease;
-    }
-    .step:hover {
-      transform: translateX(4px);
     }
     .step-icon {
       position: absolute;
@@ -64,11 +59,6 @@
       font-size: 14px;
       font-weight: 700;
       box-shadow: 0 0 10px rgba(125,211,252,0.4);
-      transition: all 0.3s ease;
-    }
-    .step:hover .step-icon {
-      box-shadow: 0 0 15px rgba(125,211,252,0.7);
-      transform: scale(1.1);
     }
     .step-title {
       font-size: 1.2rem;
@@ -79,9 +69,10 @@
     .step ol {margin:6px 0 0 16px;padding:0}
     .step li {margin-bottom:6px}
 
+    /* Mobile adjustments */
     @media (max-width: 640px) {
-      .timeline {padding-left: 40px;}
-      .step-icon {left: -22px;}
+      .timeline {padding-left: 30px;}
+      .step-icon {left: -20px;}
     }
 
     /* Footer */
@@ -151,13 +142,11 @@
     </main>
 
     <footer>
-      <div style="margin-bottom:6px">🔥 Need help? WebnTek has you covered.</div>
-      <div>© <span id="year">2025</span> WebnTek • Simple. Secure. Stream Ready.</div>
+      <div>© <span id="year">2025</span> WebnTek</div> 
     </footer>
   </div>
 
   <script>
-    // Update year automatically
     document.addEventListener('DOMContentLoaded',function(){
       var y=document.getElementById('year');
       if(y) y.textContent=new Date().getFullYear();
