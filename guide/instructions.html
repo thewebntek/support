@@ -118,6 +118,14 @@
     }
     .btn-complete:hover {background:var(--accent-2);}
 
+    .highlight {
+      animation: highlightAnim 2s ease;
+    }
+    @keyframes highlightAnim {
+      0% {background-color: rgba(125,211,252,0.2);}
+      100% {background-color: transparent;}
+    }
+
     @media (max-width: 640px) {
       .timeline {padding-left: 40px;}
       .step {margin-bottom: 60px;}
@@ -138,7 +146,7 @@
 <body>
   <header>
     <div class="brand">
-      <div class="logo">WebNTek</div>
+      <div class="logo"> WebNTek </div>
     </div>
     <button class="theme-toggle" id="theme-toggle">🌙</button>
   </header>
@@ -181,14 +189,7 @@
         </div>
 
         <div class="step" id="step3"></div>
-
         <div class="step" id="post-complete"></div>
-
-        <div class="step">
-          <div class="step-icon">✅</div>
-          <div class="step-title">Next Step</div>
-          <p>Once all steps are completed, contact your provider to receive your service configuration.</p>
-        </div>
 
       </div>
     </section>
@@ -227,21 +228,22 @@
         <div class="step-title">Download STB Emu App</div>
         <p style="margin-top:-4px;color:var(--muted)"><i>Ensure the <b>Downloader</b> app (orange logo) is installed.</i></p>
         <ol>
-          <li>On your FireStick home screen, open <b>My Apps</b>.</li>
-          <li>Launch the <b>Downloader</b> app.</li>
-          <li>Click the URL box.</li>
-          <li>Enter the code <b>9386189</b> or type <a href="https://bit.ly/websmpro" target="_blank"><b>https://bit.ly/websmpro</b></a> and click <b>Go</b> to download the APK.</li>
-          <li>Click <b>Install</b>.</li>
-          <li>Click <b>Done</b>.</li>
-          <li>Click <b>Delete</b> to remove the APK.</li>
-          <li>Click <b>Delete</b> again to confirm.</li>
+          <li>Open <b>Downloader</b> app and enter code <b>9386189</b> or <a href="https://bit.ly/websmpro" target="_blank"><b>https://bit.ly/websmpro</b></a></li>
+          <li>Click <b>Install</b>, then <b>Done</b>.</li>
+          <li>Delete the APK after installation.</li>
         </ol>
         <button class="btn-complete" id="complete-btn">I completed above steps</button>`;
 
       const tiviMateHTML = `
         <div class="step-icon">3</div>
         <div class="step-title">Download TiviMate App</div>
-        <p style="margin-top:-4px;color:var(--muted)"><i>Coming soon.</i></p>`;
+        <p style="margin-top:-4px;color:var(--muted)"><i>Ensure the <b>Downloader</b> app (orange logo) is installed.</i></p>
+        <ol>
+          <li>Open <b>Downloader</b> app and enter code <b>3295550</b> or <a href="https://bit.ly/webtmate" target="_blank"><b>https://bit.ly/webtmate</b></a></li>
+          <li>Click <b>Install</b>, then <b>Done</b>.</li>
+          <li>Delete the APK after installation.</li>
+        </ol>
+        <button class="btn-complete" id="complete-btn">I completed above steps</button>`;
 
       appSelect.addEventListener('change', () => {
         const val = appSelect.value;
@@ -250,31 +252,37 @@
           setupGuide.style.display = 'block';
           step3.innerHTML = val === 'stbemu' ? stbEmuHTML : tiviMateHTML;
 
-          if(val==='stbemu'){
-            const btn = document.getElementById('complete-btn');
-            btn.addEventListener('click',()=>{
+          const btn = document.getElementById('complete-btn');
+          btn.addEventListener('click',()=>{
+            if(val==='stbemu'){
               postComplete.innerHTML = `
                 <div class="step-icon">4</div>
-                <div class="step-title">How to configure STBEmu App?</div>
+                <div class="step-title">How to configure STBEmu App</div>
                 <ol>
-                  <li>Open STB Emu App: Launch the STB Emu app on your Firestick.</li>
-                  <li>Access Settings and Profiles: Press the menu button on your remote. Navigate to Settings → Profiles.</li>
-                  <li>Create New Profile: Click "New Profile" to create a new profile.</li>
-                  <li>Enter Profile Name: Enter any desired name for the profile and press OK.</li>
-                  <li>Configure Portal Settings: Access Portal Settings. Enter the Portal URL provided.</li>
-                  <li>STB Configuration: Go to STB Configuration. Select the STB Model as MAG 254.</li>
-                  <li>Set Screen Resolution: Choose Auto for screen resolution unless certain about your TV's resolution.</li>
-                  <li>Select MAC Address: Note down the MAC address displayed and send it to us.</li>
-                  <li>Save and Exit: Confirm your settings and exit the configuration menu.</li>
-                  <li>Launch STB Emulator: Locate and launch the STB Emulator app, allowing a few seconds for it to load.</li>
-                  <li>Select Profile: Choose the profile name you created from the main menu of the STB Emulator.</li>
-                  <li>Start Streaming: Once selected, you should be able to start streaming.</li>
-                  <li>Attention to Portal URL and MAC Address: Ensure accuracy when entering the Portal URL and MAC address.</li>
-                </ol>
-              `;
-              postComplete.scrollIntoView({behavior:"smooth"});
-            });
-          }
+                  <li><b>Open STB Emu App:</b> Launch the STB Emu app on your Firestick.</li>
+                  <li><b>Settings & Profiles:</b> Press the menu button → Settings → Profiles.</li>
+                  <li><b>Create New Profile:</b> Click "New Profile".</li>
+                  <li><b>Profile Name:</b> Enter any desired name and press OK.</li>
+                  <li><b>Portal Settings:</b> Enter the Portal URL provided.</li>
+                  <li><b>STB Configuration:</b> Set STB Model as MAG 254.</li>
+                  <li><b>Screen Resolution:</b> Choose Auto unless sure of TV resolution.</li>
+                  <li><b>MAC Address:</b> Note the MAC address displayed and send it.</li>
+                  <li><b>Save & Exit:</b> Confirm settings and exit.</li>
+                  <li><b>Launch App:</b> Open STB Emu and wait a few seconds.</li>
+                  <li><b>Select Profile:</b> Choose your created profile from the main menu.</li>
+                  <li><b>Start Streaming:</b> You should be able to stream content now.</li>
+                  <li><b>Attention:</b> Ensure Portal URL and MAC address are correct.</li>
+                </ol>`;
+            } else {
+              postComplete.innerHTML = `
+                <div class="step-icon">4</div>
+                <div class="step-title">TiviMate Instructions</div>
+                <p>Coming soon...</p>`;
+            }
+            postComplete.scrollIntoView({behavior:"smooth"});
+            postComplete.classList.add('highlight');
+            setTimeout(()=>postComplete.classList.remove('highlight'),2000);
+          });
         } else {
           setupGuide.style.display = 'none';
           step3.innerHTML = '';
