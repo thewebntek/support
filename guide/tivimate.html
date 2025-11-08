@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WebnTek Firestick Setup Guide - TiviMate</title>
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --panel:#0f1720;
+      --muted:#9aa6b2;
+      --accent:#7dd3fc;
+      --accent-2:#60a5fa;
+      --glass: rgba(255,255,255,0.03);
+      --radius:12px;
+      --max-width:1100px;
+      font-size:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#071018);color:#e6eef6;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
+    .container{max-width:var(--max-width);margin:28px auto;padding:20px;}
+
+    /* Header */
+    header{display:flex;align-items:center;justify-content:center;padding:20px 0;border-bottom:1px solid rgba(255,255,255,0.05);margin-bottom:20px;background:rgba(255,255,255,0.02);border-radius:var(--radius)}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:1.6rem}
+    .logo{width:120px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:700;color:#001018;box-shadow:0 4px 18px rgba(125,211,252,0.08)}
+
+    /* Card */
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:24px;border-radius:var(--radius);line-height:1.6;margin-top:20px}
+    h1,h2,h3{margin:0}
+    h2{margin-bottom:16px}
+    p.lead{color:var(--muted)}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      margin: 20px 0;
+      padding-left: 50px;
+      border-left: 2px solid var(--accent-2);
+    }
+    .step {
+      margin-bottom: 50px;
+      position: relative;
+    }
+    .step-icon {
+      position: absolute;
+      left: -30px;
+      top: 0;
+      background: var(--accent);
+      color: #001018;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items:center;
+      justify-content:center;
+      font-size:14px;
+      font-weight:700;
+      box-shadow:0 0 10px rgba(125,211,252,0.4);
+    }
+    .step-title {
+      font-size:1.2rem;
+      font-weight:700;
+      margin-bottom:6px;
+      color:var(--accent);
+    }
+    .step ol {margin:6px 0 0 20px;padding:0}
+    .step li {margin-bottom:6px}
+
+    @media (max-width: 640px) {
+      .timeline {padding-left: 40px;}
+      .step {margin-bottom: 60px;}
+      .step-icon {left: -24px;width:24px;height:24px;font-size:12px;}
+    }
+
+    /* Footer */
+    footer{margin-top:26px;padding:18px;border-radius:12px;text-align:center;color:var(--muted);font-size:0.95rem}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">WebNTek</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <main>
+      <section class="card" id="setup-guide">
+        <h2>🔥 Firestick Setup Guide</h2>
+
+        <div class="timeline">
+
+          <div class="step">
+            <div class="step-icon">1</div>
+            <div class="step-title">Access Developer Options</div>
+            <ol>
+              <li>Go to <b>Settings</b> on your Firestick.</li>
+              <li>Scroll right to find <b>My Fire TV</b> and select it.</li>
+              <li>Choose <b>About</b> and click your device name several times until <b>“You are now a developer”</b> appears.</li>
+            </ol>
+          </div>
+
+          <div class="step">
+            <div class="step-icon">2</div>
+            <div class="step-title">Allow Apps from Unknown Sources</div>
+            <ol>
+              <li>From <b>Settings</b>, select <b>Device / My Fire TV</b>.</li>
+              <li>Open <b>Developer Options</b>.</li>
+              <li>Toggle <b>Apps from Unknown Sources</b> on.</li>
+              <li>Confirm by clicking <b>Turn On</b>.</li>
+            </ol>
+          </div>
+
+          <div class="step">
+            <div class="step-icon">3</div>
+            <div class="step-title">Download TiviMate App</div>
+            <p style="margin-top:-4px;color:var(--muted)"><i>Ensure the <b>Downloader</b> app (orange logo) is installed.</i></p>
+            <ol>
+              <li>On your FireStick home screen, open <b>My Apps</b>.</li>
+              <li>Launch the <b>Downloader</b> app.</li>
+              <li>Click the URL box.</li>
+              <li>Enter the code <b>3295550</b> or type <a href="https://bit.ly/webtmate" target="_blank"><b>https://bit.ly/webtmate</b></a> and click <b>Go</b> to download the APK.</li>
+              <li>Click <b>Install</b>.</li>
+              <li>Click <b>Done</b>.</li>
+              <li>Click <b>Delete</b> to remove the APK.</li>
+              <li>Click <b>Delete</b> again to confirm.</li>
+            </ol>
+          </div>
+
+          <div class="step">
+            <div class="step-icon">✅</div>
+            <div class="step-title">Next Step</div>
+            <p>Once all steps are completed, contact your provider to receive your service configuration.</p>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div>© <span id="year">2025</span> WebnTek</div> 
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded',function(){
+      var y=document.getElementById('year');
+      if(y) y.textContent=new Date().getFullYear();
+    });
+  </script>
+</body>
+</html>
