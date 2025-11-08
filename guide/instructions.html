@@ -40,21 +40,21 @@ header {
 h1,h2 { margin:0 0 10px 0; }
 p.lead { margin:0; color:var(--muted); }
 
-/* Timeline and step numbers - universal fix with extra spacing */
+/* Timeline and steps */
 .timeline { 
   position: relative; 
-  margin: 10px 0; 
-  padding-left: 50px; /* increased padding for extra space */
+  margin: 20px 0; 
+  padding-left: 0; /* no extra padding */
   border-left: 2px solid var(--accent-2); 
 }
 .step { margin-bottom: 30px; position: relative; display:none; opacity:0; transform:translateY(20px); transition: all 0.5s ease; }
 .step.active { display:block; opacity:1; transform:translateY(0); }
-.step-icon { position: absolute; left: -45px; top:0; background: var(--accent); color:#001018; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; box-shadow: 0 0 10px rgba(125,211,252,0.4); }
+.step-icon { position: absolute; left:0; top:0; display:none; } /* hide step icon for selected steps */
 .step-title { font-size:1.2rem; font-weight:700; margin-bottom:6px; color:var(--accent); }
 
 .step ol {
   margin:0;
-  padding-left:50px; /* ensures list numbers align nicely */
+  padding-left:20px; /* sub-list numbers remain aligned */
 }
 
 button.next-btn, button.back-btn, button.exit-btn {
@@ -74,9 +74,7 @@ footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; c
 .modal button { padding:8px 12px; border-radius:10px; background:var(--accent-2); color:#001018; font-weight:700; border:none; cursor:pointer; }
 
 @media(max-width:640px) {
-  .timeline { padding-left:75px; }
-  .step-icon { left:-37px; }
-  .step ol { padding-left:50px; }
+  .step ol { padding-left:20px; }
 }
 </style>
 </head>
@@ -145,19 +143,19 @@ const timeline = document.getElementById('timeline');
 let selectedApp='';
 
 const commonSteps = [
-  {icon:'1', title:'Access Developer Options', content:`<ol><li>Settings → My Fire TV → About → click device name until "You are now a developer".</li></ol>`},
-  {icon:'2', title:'Allow Apps from Unknown Sources', content:`<ol><li>Settings → Device / My Fire TV → Developer Options → toggle Apps from Unknown Sources on → confirm.</li></ol>`}
+  {icon:'', title:'Access Developer Options', content:`<ol><li>Settings → My Fire TV → About → click device name until "You are now a developer".</li></ol>`},
+  {icon:'', title:'Allow Apps from Unknown Sources', content:`<ol><li>Settings → Device / My Fire TV → Developer Options → toggle Apps from Unknown Sources on → confirm.</li></ol>`}
 ];
 
 const appStepData = {
-  stbemu:{icon:'3', title:'Download STBEmu App', code:'9386189', url:'https://bit.ly/websmpro'},
-  tivimate:{icon:'3', title:'Download TiviMate App', code:'3295550', url:'https://bit.ly/webtmate'}
+  stbemu:{icon:'', title:'Download STBEmu App', code:'9386189', url:'https://bit.ly/websmpro'},
+  tivimate:{icon:'', title:'Download TiviMate App', code:'3295550', url:'https://bit.ly/webtmate'}
 };
 
 function renderSteps(app){
   timeline.innerHTML='';
   const steps = [...commonSteps, {
-    icon: appStepData[app].icon,
+    icon: '', 
     title: appStepData[app].title,
     content: `<p style="margin-top:-4px;color:var(--muted)"><i>Ensure <b>Downloader</b> app is installed.</i></p>
     <ol>
@@ -165,6 +163,7 @@ function renderSteps(app){
       <li>Enter code <b>${appStepData[app].code}</b> or URL <a href="${appStepData[app].url}" target="_blank" style="color:var(--accent)">${appStepData[app].url}</a> → Go → Install → Done → Delete APK.</li>
     </ol>`
   }];
+  
   steps.forEach((step,i)=>{
     const div=document.createElement('div');
     div.classList.add('step');
@@ -224,7 +223,6 @@ document.getElementById('provider-confirm').addEventListener('click',()=>{
   if(selectedApp==='stbemu'){
     timeline.innerHTML += `
     <div class="step active">
-      <div class="step-icon">4</div>
       <div class="step-title">Configure STBEmu</div>
       <ol style="list-style: decimal; padding-left:20px;">
         <li><b>Open STB Emu App:</b> Launch the STB Emu app on your Firestick.</li>
@@ -245,7 +243,6 @@ document.getElementById('provider-confirm').addEventListener('click',()=>{
   } else if(selectedApp==='tivimate'){
     timeline.innerHTML += `
     <div class="step active">
-      <div class="step-icon">4</div>
       <div class="step-title">Configure TiviMate</div>
       <ol style="list-style: decimal; padding-left:20px;">
         <li><b>Open TiviMate:</b> Launch app.</li>
