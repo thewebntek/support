@@ -41,9 +41,8 @@ h1,h2 { margin:0 0 10px 0; }
 p.lead { margin:0; color:var(--muted); }
 
 .timeline { position: relative; margin: 20px 0; padding-left: 50px; border-left: 2px solid var(--accent-2); }
-.step { margin-bottom: 30px; position: relative; display:none; transition: background 0.3s ease, transform 0.3s ease; }
-.step.active { display:block; animation: highlightAnim 1s ease; }
-.step.highlight { background: rgba(125,211,252,0.1); border-radius:8px; padding:8px; }
+.step { margin-bottom: 30px; position: relative; display:none; opacity:0; transform:translateY(20px); transition: all 0.5s ease; }
+.step.active { display:block; opacity:1; transform:translateY(0); }
 .step-icon { position: absolute; left: -30px; top:0; background: var(--accent); color:#001018; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; box-shadow:0 0 10px rgba(125,211,252,0.4); }
 .step-title { font-size:1.2rem; font-weight:700; margin-bottom:6px; color:var(--accent); }
 
@@ -62,11 +61,6 @@ footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; c
 }
 .modal select { width: 100%; padding:8px; border-radius:8px; margin:12px 0; }
 .modal button { padding:8px 12px; border-radius:10px; background:var(--accent-2); color:#001018; font-weight:700; border:none; cursor:pointer; }
-
-@keyframes highlightAnim {
-  0% { background-color: rgba(125,211,252,0.2); }
-  100% { background-color: transparent; }
-}
 
 @media(max-width:640px) {
   .timeline { padding-left:40px; }
@@ -162,7 +156,7 @@ function renderSteps(app){
   steps.forEach((step,i)=>{
     const div=document.createElement('div');
     div.classList.add('step');
-    if(i===0) div.classList.add('active','highlight');
+    if(i===0) div.classList.add('active');
     div.innerHTML=`<div class="step-icon">${step.icon}</div>
       <div class="step-title">${step.title}</div>
       ${step.content}
@@ -173,7 +167,7 @@ function renderSteps(app){
   setupNextButtons(app);
 }
 
-// Setup Next and Back buttons
+// Setup Next and Back buttons with smooth animation
 function setupNextButtons(app){
   const steps = timeline.querySelectorAll('.step');
   steps.forEach((step,i)=>{
@@ -183,9 +177,8 @@ function setupNextButtons(app){
         step.classList.remove('active');
         const nextStep = steps[i+1];
         if(nextStep){
-          nextStep.classList.add('active','highlight');
+          nextStep.classList.add('active');
           nextStep.scrollIntoView({behavior:'smooth', block:'center'});
-          setTimeout(()=> nextStep.classList.remove('highlight'),1500);
         } else {
           // Show provider modal after main steps
           document.getElementById('provider-modal').style.display='flex';
@@ -198,9 +191,8 @@ function setupNextButtons(app){
         step.classList.remove('active');
         const prevStep = steps[i-1];
         if(prevStep){
-          prevStep.classList.add('active','highlight');
+          prevStep.classList.add('active');
           prevStep.scrollIntoView({behavior:'smooth', block:'center'});
-          setTimeout(()=> prevStep.classList.remove('highlight'),1500);
         }
       });
     }
@@ -221,44 +213,43 @@ document.getElementById('provider-confirm').addEventListener('click',()=>{
   document.getElementById('provider-modal').style.display='none';
   if(selectedApp==='stbemu'){
     timeline.innerHTML += `
-    <div class="step active highlight">
+    <div class="step active">
       <div class="step-icon">4</div>
-      <div class="step-title">How to configure STBEmu App</div>
+      <div class="step-title">Configure STBEmu</div>
       <ol>
         <li><b>Open STB Emu App:</b> Launch the STB Emu app on your Firestick.</li>
         <li><b>Settings & Profiles:</b> Press menu → Settings → Profiles.</li>
         <li><b>Create New Profile:</b> Click "New Profile".</li>
-        <li><b>Profile Name:</b> Enter name and press OK.</li>
+        <li><b>Profile Name:</b> Enter name → OK.</li>
         <li><b>Portal Settings:</b> Enter Portal URL: <a href="${portalURL}" target="_blank" style="color:#f87171;font-weight:700;">${portalURL}</a></li>
         <li><b>STB Configuration:</b> Set STB Model as MAG 254.</li>
-        <li><b>Screen Resolution:</b> Choose Auto unless sure of TV resolution.</li>
-        <li><b>MAC Address:</b> Note the MAC address displayed <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span>.</li>
-        <li><b>Save & Exit:</b> Confirm settings and exit.</li>
+        <li><b>Screen Resolution:</b> Auto unless sure of TV resolution.</li>
+        <li><b>MAC Address:</b> Note MAC <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span>.</li>
+        <li><b>Save & Exit:</b> Confirm → exit.</li>
         <li><b>Launch App:</b> Open STB Emu.</li>
         <li><b>Select Profile:</b> Choose your created profile.</li>
-        <li><b>Start Streaming:</b> You should be able to stream content.</li>
+        <li><b>Start Streaming</b></li>
         <li><button class="exit-btn" onclick="window.location.href='https://google.com'">Exit</button></li>
       </ol>
     </div>`;
   } else if(selectedApp==='tivimate'){
     timeline.innerHTML += `
-    <div class="step active highlight">
+    <div class="step active">
       <div class="step-icon">4</div>
-      <div class="step-title">How to configure TiviMate</div>
+      <div class="step-title">Configure TiviMate</div>
       <ol>
-        <li><b>Open TiviMate:</b> Launch the TiviMate app on your device.</li>
-        <li><b>Access Settings:</b> From main menu, select Settings.</li>
-        <li><b>Add Playlist:</b> Choose Add Playlist → Stalker Portal.</li>
-        <li><b>Enter Stalker Portal URL:</b> <a href="${portalURL}" target="_blank" style="color:#f87171;font-weight:700;">${portalURL}</a></li>
-        <li><b>Provide MAC Address:</b> Enter MAC from app <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span>.</li>
-        <li><b>Process Playlist:</b> Click Next → Done message shown.</li>
-        <li>Note: TiviMate requires a premium subscription. Upgrade: <a href="https://tivimate.com" target="_blank" style="color:var(--accent)">TiviMate Premium</a></li>
+        <li><b>Open TiviMate:</b> Launch app.</li>
+        <li><b>Settings:</b> Main menu → Settings.</li>
+        <li><b>Add Playlist:</b> Add Playlist → Stalker Portal.</li>
+        <li><b>Portal URL:</b> <a href="${portalURL}" target="_blank" style="color:#f87171;font-weight:700;">${portalURL}</a></li>
+        <li><b>Provide MAC Address:</b> Enter MAC <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span>.</li>
+        <li><b>Process Playlist:</b> Click Next → Done.</li>
+        <li>Note: Requires TiviMate Premium → <a href="https://tivimate.com" target="_blank" style="color:var(--accent)">Upgrade</a></li>
         <li><button class="exit-btn" onclick="window.location.href='https://google.com'">Exit</button></li>
       </ol>
     </div>`;
   }
-  const lastStep = timeline.querySelector('.step.active');
-  lastStep.scrollIntoView({behavior:'smooth', block:'center'});
+  timeline.querySelector('.step.active').scrollIntoView({behavior:'smooth', block:'center'});
 });
 </script>
 </body>
