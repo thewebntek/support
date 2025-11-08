@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>WebnTek Firestick Setup Guide</title>
   <style>
-    :root{
+    :root {
       --bg:#0b0f14;
       --panel:#0f1720;
       --muted:#9aa6b2;
@@ -16,19 +16,78 @@
       --max-width:1100px;
       font-size:16px;
     }
+    .light-theme {
+      --bg:#f5f5f5;
+      --panel:#ffffff;
+      --muted:#555555;
+      --accent:#1d4ed8;
+      --accent-2:#3b82f6;
+      --glass: rgba(0,0,0,0.03);
+    }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#071018);color:#e6eef6;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
+    html,body{height:100%;margin:0;background:var(--bg);color:#e6eef6;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;transition: all 0.3s;}
+    body.light-theme{color:#111}
+
     .container{max-width:var(--max-width);margin:28px auto;padding:20px;}
-    header{display:flex;align-items:center;justify-content:center;padding:20px 0;border-bottom:1px solid rgba(255,255,255,0.05);margin-bottom:20px;background:rgba(255,255,255,0.02);border-radius:var(--radius)}
-    .brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:1.6rem}
-    .logo{width:120px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:700;color:#001018;box-shadow:0 4px 18px rgba(125,211,252,0.08)}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:24px;border-radius:var(--radius);line-height:1.6;margin-top:20px;display:none}
+
+    /* Header */
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:20px;
+      border-bottom:1px solid rgba(255,255,255,0.05);
+      margin-bottom:20px;
+      background:var(--panel);
+      border-radius:var(--radius);
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:700;
+      font-size:1.6rem;
+    }
+    .logo{
+      padding:0 16px;
+      height:48px;
+      border-radius:10px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      color:#001018;
+      box-shadow:0 4px 18px rgba(125,211,252,0.08);
+      width:auto;
+    }
+    .theme-toggle{
+      font-size:1.2rem;
+      cursor:pointer;
+      background:none;
+      border:none;
+      color:var(--accent);
+      transition: transform 0.2s;
+    }
+    .theme-toggle:hover{transform: scale(1.2);}
+
+    /* Card */
+    .card{
+      background:var(--panel);
+      padding:24px;
+      border-radius:var(--radius);
+      line-height:1.6;
+      margin-top:20px;
+      display:none;
+      transition: background 0.3s, color 0.3s;
+    }
     h1,h2,h3{margin:0}
     h2{margin-bottom:16px}
     p.lead{color:var(--muted)}
     a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
 
+    /* Timeline */
     .timeline {position: relative;margin: 20px 0;padding-left: 50px;border-left: 2px solid var(--accent-2);}
     .step {margin-bottom: 50px;position: relative;}
     .step-icon {position: absolute;left: -30px;top: 0;background: var(--accent);color: #001018;width: 28px;height: 28px;border-radius: 50%;display: flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;box-shadow:0 0 10px rgba(125,211,252,0.4);}
@@ -36,15 +95,25 @@
     .step ol {margin:6px 0 0 20px;padding:0}
     .step li {margin-bottom:6px}
 
+    /* Dropdown selector */
     .app-select-container {text-align:center;margin-bottom:24px;}
     select {padding:8px 14px;border-radius:8px;background:var(--glass);color:var(--muted);border:none;font-weight:600;font-size:1rem;}
-    
+
     @media (max-width: 640px) {
       .timeline {padding-left: 40px;}
       .step {margin-bottom: 60px;}
       .step-icon {left: -24px;width:24px;height:24px;font-size:12px;}
     }
-    footer{margin-top:26px;padding:18px;border-radius:12px;text-align:center;color:var(--muted);font-size:0.95rem}
+
+    /* Footer */
+    footer{
+      margin-top:26px;
+      padding:18px;
+      border-radius:12px;
+      text-align:center;
+      color:var(--muted);
+      font-size:0.95rem;
+    }
   </style>
 </head>
 <body>
@@ -52,9 +121,11 @@
     <div class="brand">
       <div class="logo">WebNTek</div>
     </div>
+    <button class="theme-toggle" id="theme-toggle">🌙</button>
   </header>
 
   <div class="container">
+    <!-- Dropdown selector -->
     <div class="app-select-container">
       <label for="app-select" style="margin-right:8px;font-weight:600;color:var(--accent)">Select App:</label>
       <select id="app-select">
@@ -64,6 +135,7 @@
       </select>
     </div>
 
+    <!-- Timeline card -->
     <section class="card" id="setup-guide">
       <h2>🔥 Firestick Setup Guide</h2>
       <div class="timeline">
@@ -90,7 +162,7 @@
         </div>
 
         <div class="step" id="step3">
-          <!-- Step 3 content will be dynamically inserted -->
+          <!-- Step 3 content inserted dynamically -->
         </div>
 
         <div class="step">
@@ -112,6 +184,35 @@
       // Update year
       const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear();
 
+      // Theme toggle logic with system detection
+      const themeBtn = document.getElementById('theme-toggle');
+      const savedTheme = localStorage.getItem('theme');
+
+      if(savedTheme){
+        if(savedTheme === 'light'){
+          document.body.classList.add('light-theme');
+          themeBtn.textContent = '☀️';
+        }
+      } else {
+        // Auto detect system preference
+        if(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches){
+          document.body.classList.add('light-theme');
+          themeBtn.textContent = '☀️';
+        }
+      }
+
+      themeBtn.addEventListener('click',()=>{
+        document.body.classList.toggle('light-theme');
+        if(document.body.classList.contains('light-theme')){
+          themeBtn.textContent = '☀️';
+          localStorage.setItem('theme','light');
+        } else {
+          themeBtn.textContent = '🌙';
+          localStorage.setItem('theme','dark');
+        }
+      });
+
+      // App selection logic
       const appSelect = document.getElementById('app-select');
       const setupGuide = document.getElementById('setup-guide');
       const step3 = document.getElementById('step3');
@@ -151,6 +252,7 @@
         if(val){
           setupGuide.style.display = 'block';
           step3.innerHTML = val === 'stbemu' ? stbEmuHTML : tiviMateHTML;
+          step3.scrollIntoView({behavior: "smooth"});
         } else {
           setupGuide.style.display = 'none';
           step3.innerHTML = '';
