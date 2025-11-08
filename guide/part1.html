@@ -41,7 +41,7 @@
       border-left: 2px solid var(--accent-2);
     }
     .step {
-      margin-bottom: 40px;
+      margin-bottom: 50px; /* increased spacing for mobile/touch */
       position: relative;
     }
     .step-icon {
@@ -66,13 +66,19 @@
       margin-bottom: 6px;
       color: var(--accent);
     }
-    .step ol {margin:6px 0 0 16px;padding:0}
+    .step ol {margin:6px 0 0 20px;padding:0}
     .step li {margin-bottom:6px}
 
     /* Mobile adjustments */
     @media (max-width: 640px) {
-      .timeline {padding-left: 30px;}
-      .step-icon {left: -20px;}
+      .timeline {padding-left: 40px;}
+      .step {margin-bottom: 60px;} /* more space between steps */
+      .step-icon {
+        left: -24px;   /* smaller offset */
+        width: 24px;   /* smaller circle */
+        height: 24px;
+        font-size: 12px;
+      }
     }
 
     /* Footer */
