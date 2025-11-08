@@ -67,9 +67,14 @@
       background:none;
       border:none;
       color:var(--accent);
-      transition: transform 0.2s;
+      transition: transform 0.5s ease;
+      display:flex;
+      align-items:center;
+      justify-content:center;
     }
-    .theme-toggle:hover{transform: scale(1.2);}
+    .theme-toggle.rotate {
+      transform: rotate(360deg);
+    }
 
     /* Card */
     .card{
@@ -98,6 +103,20 @@
     /* Dropdown selector */
     .app-select-container {text-align:center;margin-bottom:24px;}
     select {padding:8px 14px;border-radius:8px;background:var(--glass);color:var(--muted);border:none;font-weight:600;font-size:1rem;}
+
+    .btn-complete {
+      margin-top:12px;
+      display:inline-block;
+      padding:10px 16px;
+      background:var(--accent);
+      color:#001018;
+      font-weight:700;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      transition: all 0.2s;
+    }
+    .btn-complete:hover {background:var(--accent-2);}
 
     @media (max-width: 640px) {
       .timeline {padding-left: 40px;}
@@ -161,9 +180,9 @@
           </ol>
         </div>
 
-        <div class="step" id="step3">
-          <!-- Step 3 content inserted dynamically -->
-        </div>
+        <div class="step" id="step3"></div>
+
+        <div class="step" id="post-complete"></div>
 
         <div class="step">
           <div class="step-icon">✅</div>
@@ -181,41 +200,27 @@
 
   <script>
     document.addEventListener('DOMContentLoaded',function(){
-      // Update year
       const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear();
 
-      // Theme toggle logic with system detection
+      // Theme toggle logic
       const themeBtn = document.getElementById('theme-toggle');
       const savedTheme = localStorage.getItem('theme');
-
-      if(savedTheme){
-        if(savedTheme === 'light'){
-          document.body.classList.add('light-theme');
-          themeBtn.textContent = '☀️';
-        }
-      } else {
-        // Auto detect system preference
-        if(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches){
-          document.body.classList.add('light-theme');
-          themeBtn.textContent = '☀️';
-        }
-      }
+      if(savedTheme==='light'){document.body.classList.add('light-theme');themeBtn.textContent='☀️'}
+      else if(!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches){document.body.classList.add('light-theme');themeBtn.textContent='☀️'}
 
       themeBtn.addEventListener('click',()=>{
+        themeBtn.classList.add('rotate');
+        setTimeout(()=>themeBtn.classList.remove('rotate'), 500);
         document.body.classList.toggle('light-theme');
-        if(document.body.classList.contains('light-theme')){
-          themeBtn.textContent = '☀️';
-          localStorage.setItem('theme','light');
-        } else {
-          themeBtn.textContent = '🌙';
-          localStorage.setItem('theme','dark');
-        }
+        if(document.body.classList.contains('light-theme')){themeBtn.textContent='☀️';localStorage.setItem('theme','light')}
+        else{themeBtn.textContent='🌙';localStorage.setItem('theme','dark')}
       });
 
       // App selection logic
       const appSelect = document.getElementById('app-select');
       const setupGuide = document.getElementById('setup-guide');
       const step3 = document.getElementById('step3');
+      const postComplete = document.getElementById('post-complete');
 
       const stbEmuHTML = `
         <div class="step-icon">3</div>
@@ -230,29 +235,46 @@
           <li>Click <b>Done</b>.</li>
           <li>Click <b>Delete</b> to remove the APK.</li>
           <li>Click <b>Delete</b> again to confirm.</li>
-        </ol>`;
+        </ol>
+        <button class="btn-complete" id="complete-btn">I completed above steps</button>`;
 
       const tiviMateHTML = `
         <div class="step-icon">3</div>
         <div class="step-title">Download TiviMate App</div>
-        <p style="margin-top:-4px;color:var(--muted)"><i>Ensure the <b>Downloader</b> app (orange logo) is installed.</i></p>
-        <ol>
-          <li>On your FireStick home screen, open <b>My Apps</b>.</li>
-          <li>Launch the <b>Downloader</b> app.</li>
-          <li>Click the URL box.</li>
-          <li>Enter the code <b>3295550</b> or type <a href="https://bit.ly/webtmate" target="_blank"><b>https://bit.ly/webtmate</b></a> and click <b>Go</b> to download the APK.</li>
-          <li>Click <b>Install</b>.</li>
-          <li>Click <b>Done</b>.</li>
-          <li>Click <b>Delete</b> to remove the APK.</li>
-          <li>Click <b>Delete</b> again to confirm.</li>
-        </ol>`;
+        <p style="margin-top:-4px;color:var(--muted)"><i>Coming soon.</i></p>`;
 
       appSelect.addEventListener('change', () => {
         const val = appSelect.value;
+        postComplete.innerHTML = '';
         if(val){
           setupGuide.style.display = 'block';
           step3.innerHTML = val === 'stbemu' ? stbEmuHTML : tiviMateHTML;
-          step3.scrollIntoView({behavior: "smooth"});
+
+          if(val==='stbemu'){
+            const btn = document.getElementById('complete-btn');
+            btn.addEventListener('click',()=>{
+              postComplete.innerHTML = `
+                <div class="step-icon">4</div>
+                <div class="step-title">How to configure STBEmu App?</div>
+                <ol>
+                  <li>Open STB Emu App: Launch the STB Emu app on your Firestick.</li>
+                  <li>Access Settings and Profiles: Press the menu button on your remote. Navigate to Settings → Profiles.</li>
+                  <li>Create New Profile: Click "New Profile" to create a new profile.</li>
+                  <li>Enter Profile Name: Enter any desired name for the profile and press OK.</li>
+                  <li>Configure Portal Settings: Access Portal Settings. Enter the Portal URL provided.</li>
+                  <li>STB Configuration: Go to STB Configuration. Select the STB Model as MAG 254.</li>
+                  <li>Set Screen Resolution: Choose Auto for screen resolution unless certain about your TV's resolution.</li>
+                  <li>Select MAC Address: Note down the MAC address displayed and send it to us.</li>
+                  <li>Save and Exit: Confirm your settings and exit the configuration menu.</li>
+                  <li>Launch STB Emulator: Locate and launch the STB Emulator app, allowing a few seconds for it to load.</li>
+                  <li>Select Profile: Choose the profile name you created from the main menu of the STB Emulator.</li>
+                  <li>Start Streaming: Once selected, you should be able to start streaming.</li>
+                  <li>Attention to Portal URL and MAC Address: Ensure accuracy when entering the Portal URL and MAC address.</li>
+                </ol>
+              `;
+              postComplete.scrollIntoView({behavior:"smooth"});
+            });
+          }
         } else {
           setupGuide.style.display = 'none';
           step3.innerHTML = '';
