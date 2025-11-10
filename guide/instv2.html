@@ -27,9 +27,13 @@
     padding: 20px;
     border-bottom: 1px solid #30363d;
   }
-  header img {
-    height: 60px;
+  .logo {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: var(--accent);
     cursor: pointer;
+    text-decoration: none;
   }
   h1 {
     margin-top: 10px;
@@ -63,10 +67,7 @@
     font-size: 1.1rem;
     margin: 0 0 10px;
   }
-  .step ol {
-    margin: 0;
-    padding-left: 18px;
-  }
+  .step ol { margin: 0; padding-left: 18px; }
   .modal {
     display: flex;
     position: fixed;
@@ -95,16 +96,13 @@
     font-weight: bold;
     cursor: pointer;
   }
-  select {
-    background: #21262d;
-    color: var(--text);
-  }
+  select { background: #21262d; color: var(--text); }
   select:focus, button:hover { outline: 2px solid var(--accent-2); }
 </style>
 </head>
 <body>
   <header>
-    <a href=""><img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Fire_TV_logo.svg" alt="Logo"></a>
+    <a href="" class="logo">WebNTek</a>
     <h1 id="guide-title">Firestick Setup Guide</h1>
   </header>
 
@@ -154,19 +152,23 @@
 
   const appSteps = {
     stbemu:[
-      {title:'Download STBEmu App', content:`<ol><li>Open My Apps → Launch Downloader → Enter code 9386189 or URL <a href="https://bit.ly/websmpro" target="_blank">https://bit.ly/websmpro</a> → Go → Install → Done → Delete APK.</li></ol>`},
-      {title:'Configure STBEmu', content:`<ol><li>Open STBEmu App → Menu → Settings → Profiles → New Profile → Name it</li>
-      <li>Enter Portal URL: <a href="\${portalURL}" target="_blank">\${portalURL}</a></li>
-      <li>Set STB Model: MAG 254 → Resolution: Auto</li>
-      <li>Note MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
-      <li>Save → Exit → Launch → Select Profile → Start Streaming</li></ol>`}
+      {title:'Download STBEmu App', content:`<ol><li>Open My Apps → Launch Downloader → Enter code 9386189 or URL <a href="${portalURL}" target="_blank">https://bit.ly/websmpro</a> → Go → Install → Done → Delete APK.</li></ol>`},
+      {title:'Configure STBEmu', content:`<ol>
+        <li>Open STBEmu App → Menu → Settings → Profiles → New Profile → Name it</li>
+        <li>Enter Portal URL: <a href="${portalURL}" class="portal-link" target="_blank">${portalURL}</a></li>
+        <li>Set STB Model: MAG 254 → Resolution: Auto</li>
+        <li>Note MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
+        <li>Save → Exit → Launch → Select Profile → Start Streaming</li>
+      </ol>`}
     ],
     tivimate:[
-      {title:'Download TiviMate App', content:`<ol><li>Open My Apps → Launch Downloader → Enter code 3295550 or URL <a href="https://bit.ly/webtmate" target="_blank">https://bit.ly/webtmate</a> → Go → Install → Done → Delete APK.</li></ol>`},
-      {title:'Configure TiviMate', content:`<ol><li>Open TiviMate → Menu → Settings → Add Playlist → Stalker Portal</li>
-      <li>Enter Portal URL: <a href="\${portalURL}" target="_blank">\${portalURL}</a></li>
-      <li>Provide MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
-      <li>Click Next → Done</li></ol>
+      {title:'Download TiviMate App', content:`<ol><li>Open My Apps → Launch Downloader → Enter code 3295550 or URL <a href="${portalURL}" target="_blank">https://bit.ly/webtmate</a> → Go → Install → Done → Delete APK.</li></ol>`},
+      {title:'Configure TiviMate', content:`<ol>
+        <li>Open TiviMate → Menu → Settings → Add Playlist → Stalker Portal</li>
+        <li>Enter Portal URL: <a href="${portalURL}" class="portal-link" target="_blank">${portalURL}</a></li>
+        <li>Provide MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
+        <li>Click Next → Done</li>
+      </ol>
       <p style="color:var(--accent-2); font-style:italic;">Note: Requires TiviMate Premium → <a href="https://tivimate.com" target="_blank">Upgrade</a></p>`}
     ]
   };
