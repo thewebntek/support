@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Android/Firestick Setup Guide</title>
+<title>Firestick Setup Guide</title>
 <style>
 :root {
   --bg:#0b0f14;
@@ -24,7 +24,7 @@ body.light {
   color:#111;
 }
 * { box-sizing:border-box; }
-html,body { height:100%; margin:0; background:var(--bg); color:#e6eef6; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,"Helvetica Neue",Arial; transition: all 0.3s ease; scroll-behavior: smooth; }
+html,body { height:100%; margin:0; background:var(--bg); color:#e6eef6; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,"Helvetica Neue",Arial; transition: all 0.3s ease; scroll-behavior: smooth; user-select:none; }
 .container { max-width:var(--max-width); margin:28px auto; padding:20px; }
 
 header {
@@ -32,8 +32,7 @@ header {
   background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
   backdrop-filter: blur(6px);
 }
-.logo { width:auto; text-align:center; padding:0 2ch; height:44px; border-radius:10px; background: linear-gradient(135deg,var(--accent),var(--accent-2)); display:flex; align-items:center; justify-content:center; font-weight:700; color:#022; box-shadow:0 4px 18px rgba(125,211,252,0.08);}
-.logo a { color:#022; text-decoration:none; display:block; width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
+.logo { width:auto; text-align:center; padding:0 2ch; height:44px; border-radius:10px; background: linear-gradient(135deg,var(--accent),var(--accent-2)); display:flex; align-items:center; justify-content:center; font-weight:700; color:#022; box-shadow:0 4px 18px rgba(125,211,252,0.08); cursor:pointer;}
 .theme-toggle { cursor:pointer; font-size:20px; }
 
 h1,h2 { margin:0 0 10px 0; }
@@ -46,16 +45,37 @@ p.lead { margin:0; color:var(--muted); }
   padding-left: 10px; 
   border-left: 2px solid var(--accent-2); 
 }
-.step { margin-bottom: 30px; position: relative; display:none; opacity:0; transform:translateY(20px); transition: all 0.5s ease; }
-.step.active { display:block; opacity:1; transform:translateY(0); }
-.step-icon { position: absolute; left:0; top:0; display:none; }
-.step-title { font-size:1.2rem; font-weight:700; margin-bottom:6px; color:var(--accent); }
-
-.step ol { margin:0; padding-left:20px; }
-
-button.next-btn, button.back-btn, button.exit-btn, button#confirm-selection {
-  margin-top:12px; padding:6px 12px; border-radius:8px; background:var(--accent-2); color:#001018; font-weight:700; border:none; cursor:pointer;
-  margin-right: 8px;
+.step { 
+  margin-bottom: 20px; 
+  position: relative; 
+  display:none; 
+  opacity:0; 
+  transform: translateY(20px); 
+  transition: all 0.5s ease, box-shadow 0.3s ease; 
+  padding:12px; 
+  border-left: 4px solid transparent;
+  border-radius:8px;
+  background: rgba(255,255,255,0.01);
+}
+.step.active { 
+  display:block; 
+  opacity:1; 
+  transform: translateY(0); 
+  border-left: 4px solid var(--accent); 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  background: rgba(125,211,252,0.03);
+}
+.step-title { 
+  font-size:1.2rem; 
+  font-weight:700; 
+  margin-bottom:6px; 
+  color: var(--accent); 
+}
+.step-content { 
+  margin-left:10px; 
+}
+button.next-btn, button.back-btn, button.exit-btn, button#confirm-selection { 
+  margin-top:12px; padding:6px 12px; border-radius:8px; background: var(--accent-2); color:#001018; font-weight:700; border:none; cursor:pointer; margin-right:8px;
 }
 button:disabled { background: rgba(125,211,252,0.4); cursor:not-allowed; }
 
@@ -76,14 +96,14 @@ footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; c
 </head>
 <body>
 <header>
-  <div class="logo"><a href="https://webntek.net/guide/instructions.html" target="_blank">WebNTek</a></div>
+  <div class="logo" onclick="window.location.href=window.location.href">WebNTek</div>
   <div class="theme-toggle" id="theme-toggle">☀️</div>
 </header>
 
 <div class="container">
 <main>
 <section class="card" id="setup-guide" style="margin-top:20px;padding:24px;line-height:1.6">
-<h2 style="margin-top:0">🔥 Firestick Setup Guide</h2>
+<h2 id="guide-title" style="margin-top:0">🔥 Firestick Setup Guide</h2>
 
 <!-- Combined selection modal -->
 <div id="selection-modal" class="modal-bg">
@@ -119,6 +139,12 @@ footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; c
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 
+// Disable right-click and keyboard shortcuts
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  if(e.ctrlKey || e.key==="F12" || e.key==="u" || e.key==="s") e.preventDefault();
+});
+
 // Theme toggle
 const themeToggle = document.getElementById('theme-toggle');
 themeToggle.addEventListener('click',()=>{
@@ -129,6 +155,9 @@ themeToggle.addEventListener('click',()=>{
 const appSelect = document.getElementById('app-select');
 const providerSelect = document.getElementById('provider-select');
 const confirmBtn = document.getElementById('confirm-selection');
+const guideTitle = document.getElementById('guide-title');
+
+const appNames = {stbemu:'STBEmu', tivimate:'TiviMate'};
 
 confirmBtn.addEventListener('click', ()=>{
   const selectedApp = appSelect.value;
@@ -140,40 +169,41 @@ confirmBtn.addEventListener('click', ()=>{
   }
 
   document.getElementById('selection-modal').style.display='none';
+  guideTitle.textContent = `Guide to setup ${appNames[selectedApp]} on Firestick`;
+
   const timeline = document.getElementById('timeline');
   timeline.innerHTML='';
 
-  // Step data
   const appSteps = {
     stbemu:[
-      {title:'Access Developer Options', content:`Settings → My Fire TV → About → click device name until "You are now a developer".`},
-      {title:'Allow Apps from Unknown Sources', content:`Settings → Device / My Fire TV → Developer Options → toggle Apps from Unknown Sources on → confirm.`},
-      {title:'Download STBEmu App', content:`Open My Apps → Launch Downloader → Enter code 9386189 or URL <a href="https://bit.ly/websmpro" target="_blank">https://bit.ly/websmpro</a> → Go → Install → Done → Delete APK.`},
-      {title:'Configure STBEmu', content:`<ol>
-        <li>Open STBEmu App</li>
-        <li>Press Menu → Settings → Profiles</li>
-        <li>Click "New Profile"</li>
-        <li>Enter Profile Name → OK</li>
-        <li>Enter Portal URL: <a href="${portalURL}" target="_blank">${portalURL}</a></li>
-        <li>Set STB Model: MAG 254</li>
-        <li>Screen Resolution: Auto unless sure of TV resolution</li>
-        <li>Note MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
-        <li>Save & Exit → Launch App → Select Profile → Start Streaming</li>
-      </ol>`}
+      {title:'Access Developer Options', content:'Settings → My Fire TV → About → click device name until "You are now a developer".'},
+      {title:'Allow Apps from Unknown Sources', content:'Settings → Device / My Fire TV → Developer Options.'},
+      {title:'Toggle Apps from Unknown Sources', content:'Turn on "Apps from Unknown Sources" → confirm.'},
+      {title:'Download STBEmu App', content:'Open My Apps → Launch Downloader.'},
+      {title:'Enter Code or URL', content:`Enter code 9386189 or URL <a href="https://bit.ly/websmpro" target="_blank">https://bit.ly/websmpro</a> → Go → Install → Done → Delete APK.`},
+      {title:'Open STBEmu App', content:'Launch STBEmu App on your Firestick.'},
+      {title:'Settings & Profiles', content:'Press Menu → Settings → Profiles.'},
+      {title:'Create New Profile', content:'Click "New Profile".'},
+      {title:'Profile Name', content:'Enter Profile Name → OK.'},
+      {title:'Portal URL', content:`Enter Portal URL: <a href="${portalURL}" class="portal-link" target="_blank">${portalURL}</a>`},
+      {title:'STB Model', content:'Set STB Model: MAG 254.'},
+      {title:'Screen Resolution', content:'Set Screen Resolution: Auto unless you know TV resolution.'},
+      {title:'MAC Address', content:'Note MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span>.'},
+      {title:'Save & Exit', content:'Confirm → Exit → Launch App → Select Profile → Start Streaming.'}
     ],
     tivimate:[
-      {title:'Access Developer Options', content:`Settings → My Fire TV → About → click device name until "You are now a developer".`},
-      {title:'Allow Apps from Unknown Sources', content:`Settings → Device / My Fire TV → Developer Options → toggle Apps from Unknown Sources on → confirm.`},
-      {title:'Download TiviMate App', content:`Open My Apps → Launch Downloader → Enter code 3295550 or URL <a href="https://bit.ly/webtmate" target="_blank">https://bit.ly/webtmate</a> → Go → Install → Done → Delete APK.`},
-      {title:'Configure TiviMate', content:`<ol>
-        <li>Open TiviMate App</li>
-        <li>Main Menu → Settings</li>
-        <li>Add Playlist → Stalker Portal</li>
-        <li>Enter Portal URL: <a href="${portalURL}" target="_blank">${portalURL}</a></li>
-        <li>Provide MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
-        <li>Click Next → Done</li>
-        <li>Requires TiviMate Premium → <a href="https://tivimate.com" target="_blank">Upgrade</a></li>
-      </ol>`}
+      {title:'Access Developer Options', content:'Settings → My Fire TV → About → click device name until "You are now a developer".'},
+      {title:'Allow Apps from Unknown Sources', content:'Settings → Device / My Fire TV → Developer Options.'},
+      {title:'Toggle Apps from Unknown Sources', content:'Turn on "Apps from Unknown Sources" → confirm.'},
+      {title:'Download TiviMate App', content:'Open My Apps → Launch Downloader.'},
+      {title:'Enter Code or URL', content:`Enter code 3295550 or URL <a href="https://bit.ly/webtmate" target="_blank">https://bit.ly/webtmate</a> → Go → Install → Done → Delete APK.`},
+      {title:'Open TiviMate App', content:'Launch TiviMate App.'},
+      {title:'Settings', content:'Main Menu → Settings.'},
+      {title:'Add Playlist', content:'Add Playlist → Stalker Portal.'},
+      {title:'Portal URL', content:`Enter Portal URL: <a href="${portalURL}" class="portal-link" target="_blank">${portalURL}</a>`},
+      {title:'MAC Address', content:'Provide MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span>.'},
+      {title:'Process Playlist', content:'Click Next → Done.'},
+      {title:'TiviMate Premium', content:'Requires TiviMate Premium → <a href="https://tivimate.com" target="_blank">Upgrade</a>.'}
     ]
   };
 
@@ -190,7 +220,6 @@ confirmBtn.addEventListener('click', ()=>{
     timeline.appendChild(div);
   });
 
-  // Navigation
   const stepElems = timeline.querySelectorAll('.step');
   stepElems.forEach((step,i)=>{
     const nextBtn = step.querySelector('.next-btn');
@@ -198,7 +227,7 @@ confirmBtn.addEventListener('click', ()=>{
 
     if(nextBtn){
       nextBtn.addEventListener('click', ()=>{
-        if(i===stepElems.length-1) window.location.href='https://google.com';
+        if(i===stepElems.length-1) window.location.href=window.location.href;
         else{
           step.classList.remove('active');
           stepElems[i+1].classList.add('active');
