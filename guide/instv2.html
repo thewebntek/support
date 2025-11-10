@@ -228,8 +228,16 @@
     steps.forEach(s=>{
       const stepDiv = document.createElement("div");
       stepDiv.className = "step";
-      // Replace href AND inner text with portal URL
-      let content = s.content.replace(/href="#" class="portal-link">.*?<\/a>/g, `href="${portalURL}" class="portal-link">${portalURL}</a>`);
+
+      // Replace placeholder link with portal URL after provider selection
+      let content = s.content;
+      if(portalURL){
+        content = content.replace(
+          /<a href="#" class="portal-link" target="_blank">.*?<\/a>/g,
+          `<a href="${portalURL}" class="portal-link" target="_blank">${portalURL}</a>`
+        );
+      }
+
       stepDiv.innerHTML = `<h2>${s.title}</h2>${content}`;
       timeline.appendChild(stepDiv);
     });
