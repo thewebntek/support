@@ -11,6 +11,7 @@
     --text: #e6edf3;
     --accent: #2f81f7;
     --accent-2: #58a6ff;
+    --radius: 12px;
   }
   body {
     background: var(--bg);
@@ -29,14 +30,23 @@
   }
   .logo {
     display: inline-block;
-    font-weight: bold;
-    font-size: 1.5rem;
-    color: var(--accent);
     cursor: pointer;
-    text-decoration: none;
+    margin-bottom: 10px;
+  }
+  .logo a {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:140px;
+    height:44px;
+    background: linear-gradient(135deg,#7dd3fc,#60a5fa);
+    border-radius: var(--radius);
+    color:#022;
+    font-weight:700;
+    text-decoration:none;
   }
   h1 {
-    margin-top: 10px;
+    margin: 0;
     font-size: 1.5rem;
   }
   .timeline {
@@ -47,7 +57,7 @@
   }
   .step {
     background: var(--card);
-    border-radius: 12px;
+    border-radius: var(--radius);
     padding: 15px 20px;
     margin: 15px 0;
     position: relative;
@@ -80,9 +90,9 @@
   .modal-content {
     background: var(--card);
     padding: 25px;
-    border-radius: 14px;
+    border-radius: var(--radius);
     width: 90%;
-    max-width: 380px;
+    max-width: 400px;
     text-align: center;
   }
   select, button {
@@ -101,38 +111,44 @@
 </style>
 </head>
 <body>
-  <header>
-    <a href="" class="logo">WebNTek</a>
-    <h1 id="guide-title">Firestick Setup Guide</h1>
-  </header>
 
-  <div class="timeline" id="timeline"></div>
-
-  <!-- App Modal -->
-  <div class="modal" id="app-modal">
-    <div class="modal-content">
-      <h2>Select App</h2>
-      <select id="app-select">
-        <option value="">-- Choose App --</option>
-        <option value="stbemu">STBEmu (Free)</option>
-        <option value="tivimate">TiviMate (Premium)</option>
-      </select>
-      <button id="app-confirm">Next</button>
-    </div>
+<header>
+  <div class="logo">
+    <a href="">WebNTek</a>
   </div>
+  <h1 id="guide-title">Firestick Setup Guide</h1>
+</header>
 
-  <!-- Provider Modal -->
-  <div class="modal" id="provider-modal" style="display:none;">
-    <div class="modal-content">
-      <h2>Select Service Provider</h2>
-      <select id="provider-select">
-        <option value="">-- Choose Provider --</option>
-        <option value="https://portal.provider1.com">Provider 1</option>
-        <option value="https://portal.provider2.com">Provider 2</option>
-      </select>
-      <button id="provider-confirm">Start Guide</button>
-    </div>
+<div class="timeline" id="timeline"></div>
+
+<!-- App Modal -->
+<div class="modal" id="app-modal">
+  <div class="modal-content">
+    <h2>Select App</h2>
+    <select id="app-select">
+      <option value="">-- Choose App --</option>
+      <option value="stbemu">STBEmu (Free)</option>
+      <option value="tivimate">TiviMate (Premium)</option>
+    </select>
+    <button id="app-confirm">Next</button>
   </div>
+</div>
+
+<!-- Provider Modal -->
+<div class="modal" id="provider-modal" style="display:none;">
+  <div class="modal-content">
+    <h2>Select Service Provider</h2>
+    <select id="provider-select">
+      <option value="">-- Choose Provider --</option>
+      <option value="https://glotv.me">Glotv</option>
+      <option value="https://p1.airce.io">Gold/Global</option>
+      <option value="https://smart4k.me">Smart4K</option>
+      <option value="http://sky.dittotvv.cc">Sky</option>
+      <option value="https://tv.stream4k.cc">Stream4K</option>
+    </select>
+    <button id="provider-confirm">Start Guide</button>
+  </div>
+</div>
 
 <script>
   // Prevent right-click, copy, inspect
@@ -152,7 +168,7 @@
 
   const appSteps = {
     stbemu:[
-      {title:'Download STBEmu App', content:`<ol><li>Open My Apps → Launch Downloader → Enter code 9386189 or URL <a href="${portalURL}" target="_blank">https://bit.ly/websmpro</a> → Go → Install → Done → Delete APK.</li></ol>`},
+      {title:'Download STBEmu App', content:`<ol><li>Open My Apps → Launch Downloader → Enter code 9386189 or URL <a href="${portalURL}" class="portal-link" target="_blank">https://bit.ly/websmpro</a> → Go → Install → Done → Delete APK.</li></ol>`},
       {title:'Configure STBEmu', content:`<ol>
         <li>Open STBEmu App → Menu → Settings → Profiles → New Profile → Name it</li>
         <li>Enter Portal URL: <a href="${portalURL}" class="portal-link" target="_blank">${portalURL}</a></li>
@@ -162,7 +178,7 @@
       </ol>`}
     ],
     tivimate:[
-      {title:'Download TiviMate App', content:`<ol><li>Open My Apps → Launch Downloader → Enter code 3295550 or URL <a href="${portalURL}" target="_blank">https://bit.ly/webtmate</a> → Go → Install → Done → Delete APK.</li></ol>`},
+      {title:'Download TiviMate App', content:`<ol><li>Open My Apps → Launch Downloader → Enter code 3295550 or URL <a href="${portalURL}" class="portal-link" target="_blank">https://bit.ly/webtmate</a> → Go → Install → Done → Delete APK.</li></ol>`},
       {title:'Configure TiviMate', content:`<ol>
         <li>Open TiviMate → Menu → Settings → Add Playlist → Stalker Portal</li>
         <li>Enter Portal URL: <a href="${portalURL}" class="portal-link" target="_blank">${portalURL}</a></li>
@@ -203,5 +219,6 @@
     renderSteps(selectedApp);
   });
 </script>
+
 </body>
 </html>
