@@ -159,6 +159,18 @@ const guideTitle = document.getElementById('guide-title');
 
 const appNames = {stbemu:'STBEmu', tivimate:'TiviMate'};
 
+// Common steps
+const commonSteps = [
+  {icon:'', title:'Access Developer Options', content:`<ol>
+    <li>Settings → My Fire TV → About</li>
+    <li>Click device name until "You are now a developer"</li>
+  </ol>`},
+  {icon:'', title:'Allow Apps from Unknown Sources', content:`<ol>
+    <li>Settings → Device / My Fire TV → Developer Options</li>
+    <li>Toggle "Apps from Unknown Sources" on → confirm</li>
+  </ol>`}
+];
+
 confirmBtn.addEventListener('click', ()=>{
   const selectedApp = appSelect.value;
   const portalURL = providerSelect.value;
@@ -174,62 +186,46 @@ confirmBtn.addEventListener('click', ()=>{
   const timeline = document.getElementById('timeline');
   timeline.innerHTML='';
 
-// Step data
-const appSteps = {
-  stbemu:[
-    {title:'Access Developer Options', content:`<ol>
-      <li>Settings → My Fire TV → About</li>
-      <li>Click device name until "You are now a developer"</li>
-    </ol>`},
-    {title:'Allow Apps from Unknown Sources', content:`<ol>
-      <li>Settings → Device / My Fire TV → Developer Options</li>
-      <li>Toggle "Apps from Unknown Sources" on → confirm</li>
-    </ol>`},
-    {title:'Download STBEmu App', content:`<ol>
-      <li>Open My Apps → Launch Downloader</li>
-      <li>Enter code 9386189 or URL <a href="https://bit.ly/websmpro" target="_blank">https://bit.ly/websmpro</a></li>
-      <li>Click Go → Install → Done → Delete APK</li>
-    </ol>`},
-    {title:'Configure STBEmu', content:`<ol>
-      <li>Open STBEmu App</li>
-      <li>Press Menu → Settings → Profiles</li>
-      <li>Click "New Profile"</li>
-      <li>Enter Profile Name → OK</li>
-      <li>Enter Portal URL: <a href="${portalURL}" target="_blank">${portalURL}</a></li>
-      <li>Set STB Model: MAG 254</li>
-      <li>Screen Resolution: Auto unless sure of TV resolution</li>
-      <li>Note MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
-      <li>Save & Exit → Launch App → Select Profile → Start Streaming</li>
-    </ol>`}
-  ],
-  tivimate:[
-    {title:'Access Developer Options', content:`<ol>
-      <li>Settings → My Fire TV → About</li>
-      <li>Click device name until "You are now a developer"</li>
-    </ol>`},
-    {title:'Allow Apps from Unknown Sources', content:`<ol>
-      <li>Settings → Device / My Fire TV → Developer Options</li>
-      <li>Toggle "Apps from Unknown Sources" on → confirm</li>
-    </ol>`},
-    {title:'Download TiviMate App', content:`<ol>
-      <li>Open My Apps → Launch Downloader</li>
-      <li>Enter code 3295550 or URL <a href="https://bit.ly/webtmate" target="_blank">https://bit.ly/webtmate</a></li>
-      <li>Click Go → Install → Done → Delete APK</li>
-    </ol>`},
-    {title:'Configure TiviMate', content:`<ol>
-      <li>Open TiviMate App</li>
-      <li>Main Menu → Settings</li>
-      <li>Add Playlist → Stalker Portal</li>
-      <li>Enter Portal URL: <a href="${portalURL}" target="_blank">${portalURL}</a></li>
-      <li>Provide MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
-      <li>Click Next → Done</li>
-    </ol>
-    <p style="color:var(--muted); font-style:italic; margin-top:6px;">
-  Note: Requires TiviMate Premium → <a href="https://tivimate.com" target="_blank">Upgrade</a>
-    </p>
-`}
-  ]
-};
+  const appSteps = {
+    stbemu:[
+      ...commonSteps,
+      {title:'Download STBEmu App', content:`<ol>
+        <li>Open My Apps → Launch Downloader</li>
+        <li>Enter code 9386189 or URL <a href="https://bit.ly/websmpro" target="_blank">https://bit.ly/websmpro</a></li>
+        <li>Click Go → Install → Done → Delete APK</li>
+      </ol>`},
+      {title:'Configure STBEmu', content:`<ol>
+        <li>Open STBEmu App</li>
+        <li>Press Menu → Settings → Profiles</li>
+        <li>Click "New Profile"</li>
+        <li>Enter Profile Name → OK</li>
+        <li>Enter Portal URL: <a href="${portalURL}" target="_blank">${portalURL}</a></li>
+        <li>Set STB Model: MAG 254</li>
+        <li>Screen Resolution: Auto unless sure of TV resolution</li>
+        <li>Note MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
+        <li>Save & Exit → Launch App → Select Profile → Start Streaming</li>
+      </ol>`}
+    ],
+    tivimate:[
+      ...commonSteps,
+      {title:'Download TiviMate App', content:`<ol>
+        <li>Open My Apps → Launch Downloader</li>
+        <li>Enter code 3295550 or URL <a href="https://bit.ly/webtmate" target="_blank">https://bit.ly/webtmate</a></li>
+        <li>Click Go → Install → Done → Delete APK</li>
+      </ol>`},
+      {title:'Configure TiviMate', content:`<ol>
+        <li>Open TiviMate App</li>
+        <li>Main Menu → Settings</li>
+        <li>Add Playlist → Stalker Portal</li>
+        <li>Enter Portal URL: <a href="${portalURL}" target="_blank">${portalURL}</a></li>
+        <li>Provide MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
+        <li>Click Next → Done</li>
+      </ol>
+      <p style="color:var(--muted); font-style:italic; margin-top:6px;">
+        Note: Requires TiviMate Premium → <a href="https://tivimate.com" target="_blank">Upgrade</a>
+      </p>`}
+    ]
+  };
 
   const steps = appSteps[selectedApp];
 
