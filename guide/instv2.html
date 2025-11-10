@@ -52,26 +52,41 @@
   .timeline {
     max-width: 650px;
     margin: 30px auto;
-    padding-left: 20px;
-    border-left: 2px solid var(--accent-2);
+    position: relative;
+    padding-left: 40px;
+  }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--accent-2);
   }
   .step {
     background: var(--card);
     border-radius: var(--radius);
     padding: 15px 20px;
-    margin: 15px 0;
+    margin: 20px 0;
     position: relative;
     box-shadow: 0 0 10px #0003;
   }
   .step::before {
-    content: "";
+    content: counter(step);
+    counter-increment: step;
     position: absolute;
-    left: -12px;
-    top: 20px;
-    width: 12px;
-    height: 12px;
-    background: var(--accent-2);
+    left: -30px;
+    top: 15px;
+    width: 24px;
+    height: 24px;
+    background: var(--accent);
     border-radius: 50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight: bold;
+    color: #001018;
   }
   .step h2 {
     font-size: 1.1rem;
@@ -102,12 +117,13 @@
     border-radius: 8px;
     border: none;
     background: var(--accent);
-    color: #fff;
+    color: #001018;
     font-weight: bold;
     cursor: pointer;
   }
   select { background: #21262d; color: var(--text); }
   select:focus, button:hover { outline: 2px solid var(--accent-2); }
+  counter-reset: step;
 </style>
 </head>
 <body>
@@ -162,26 +178,40 @@
   let portalURL = "";
 
   const commonSteps = [
-    {title:'Access Developer Options', content:`<ol><li>Settings → My Fire TV → About → click device name until "You are now a developer".</li></ol>`},
-    {title:'Allow Apps from Unknown Sources', content:`<ol><li>Settings → Device / My Fire TV → Developer Options → toggle Apps from Unknown Sources on → confirm.</li></ol>`}
+    {title:'Access Developer Options', content:`<ol>
+      <li>Settings → My Fire TV → About</li>
+      <li>Click device name until "You are now a developer"</li>
+    </ol>`},
+    {title:'Allow Apps from Unknown Sources', content:`<ol>
+      <li>Settings → Device / My Fire TV → Developer Options</li>
+      <li>Toggle "Apps from Unknown Sources" on → confirm</li>
+    </ol>`}
   ];
 
   const appSteps = {
     stbemu:[
-      {title:'Download STBEmu App', content:`<ol><li>Open My Apps → Launch Downloader → Enter code 9386189 or URL <a href="${portalURL}" class="portal-link" target="_blank">https://bit.ly/websmpro</a> → Go → Install → Done → Delete APK.</li></ol>`},
+      {title:'Download STBEmu App', content:`<ol>
+        <li>Open My Apps → Launch Downloader</li>
+        <li>Enter code 9386189 or URL <a href="#" class="portal-link" target="_blank">link will appear here</a></li>
+        <li>Go → Install → Done → Delete APK</li>
+      </ol>`},
       {title:'Configure STBEmu', content:`<ol>
         <li>Open STBEmu App → Menu → Settings → Profiles → New Profile → Name it</li>
-        <li>Enter Portal URL: <a href="${portalURL}" class="portal-link" target="_blank">${portalURL}</a></li>
+        <li>Enter Portal URL: <a href="#" class="portal-link" target="_blank">link will appear here</a></li>
         <li>Set STB Model: MAG 254 → Resolution: Auto</li>
         <li>Note MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
         <li>Save → Exit → Launch → Select Profile → Start Streaming</li>
       </ol>`}
     ],
     tivimate:[
-      {title:'Download TiviMate App', content:`<ol><li>Open My Apps → Launch Downloader → Enter code 3295550 or URL <a href="${portalURL}" class="portal-link" target="_blank">https://bit.ly/webtmate</a> → Go → Install → Done → Delete APK.</li></ol>`},
+      {title:'Download TiviMate App', content:`<ol>
+        <li>Open My Apps → Launch Downloader</li>
+        <li>Enter code 3295550 or URL <a href="#" class="portal-link" target="_blank">link will appear here</a></li>
+        <li>Go → Install → Done → Delete APK</li>
+      </ol>`},
       {title:'Configure TiviMate', content:`<ol>
         <li>Open TiviMate → Menu → Settings → Add Playlist → Stalker Portal</li>
-        <li>Enter Portal URL: <a href="${portalURL}" class="portal-link" target="_blank">${portalURL}</a></li>
+        <li>Enter Portal URL: <a href="#" class="portal-link" target="_blank">link will appear here</a></li>
         <li>Provide MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
         <li>Click Next → Done</li>
       </ol>
@@ -189,16 +219,18 @@
     ]
   };
 
-  function renderSteps(app) {
-    const steps = [...commonSteps, ...appSteps[app]];
+  function renderSteps(app){
     document.getElementById("guide-title").textContent = `Guide to setup ${app === "tivimate" ? "TiviMate" : "STBEmu"} on Firestick`;
     const timeline = document.getElementById("timeline");
     timeline.innerHTML = "";
+    const steps = [...commonSteps, ...appSteps[app]];
+
     steps.forEach(s=>{
-      const step = document.createElement("div");
-      step.className = "step";
-      step.innerHTML = `<h2>${s.title}</h2>${s.content}`;
-      timeline.appendChild(step);
+      const stepDiv = document.createElement("div");
+      stepDiv.className = "step";
+      let content = s.content.replace(/href="#" class="portal-link"/g, `href="${portalURL}" class="portal-link"`);
+      stepDiv.innerHTML = `<h2>${s.title}</h2>${content}`;
+      timeline.appendChild(stepDiv);
     });
   }
 
