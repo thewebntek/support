@@ -11,7 +11,6 @@
   --muted:#9aa6b2;
   --accent:#7dd3fc;
   --accent-2:#60a5fa;
-  --glass: rgba(255,255,255,0.03);
   --radius:12px;
   --max-width:1100px;
   font-size:16px;
@@ -92,8 +91,8 @@ footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; c
     <h3>Select App & Provider</h3>
     <select id="app-select">
       <option value="">-- Choose App --</option>
-      <option value="stbemu">STBEmu</option>
-      <option value="tivimate">TiviMate</option>
+      <option value="stbemu">STBEmu (Free)</option>
+      <option value="tivimate">TiviMate (Premium)</option>
     </select>
     <select id="provider-select">
       <option value="">-- Choose Provider --</option>
@@ -103,7 +102,7 @@ footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; c
       <option value="http://sky.dittotvv.cc">Sky</option>
       <option value="https://tv.stream4k.cc">Stream4K</option>
     </select>
-    <button id="confirm-selection" disabled>Confirm</button>
+    <button id="confirm-selection">Confirm</button>
   </div>
 </div>
 
@@ -127,88 +126,80 @@ themeToggle.addEventListener('click',()=>{
   themeToggle.textContent = document.body.classList.contains('light') ? '🌙' : '☀️';
 });
 
-// Enable confirm only if both selections are made
 const appSelect = document.getElementById('app-select');
 const providerSelect = document.getElementById('provider-select');
 const confirmBtn = document.getElementById('confirm-selection');
 
-[appSelect, providerSelect].forEach(sel => sel.addEventListener('change',()=>{
-  confirmBtn.disabled = !appSelect.value || !providerSelect.value;
-}));
-
-// Timeline logic
-const timeline = document.getElementById('timeline');
-const commonSteps = [
-  {icon:'', title:'Access Developer Options', content:`<ol><li>Settings → My Fire TV → About → click device name until "You are now a developer".</li></ol>`},
-  {icon:'', title:'Allow Apps from Unknown Sources', content:`<ol><li>Settings → Device / My Fire TV → Developer Options → toggle Apps from Unknown Sources on → confirm.</li></ol>`}
-];
-
-const appStepData = {
-  stbemu:{icon:'', title:'Download STBEmu App', code:'9386189', url:'https://bit.ly/websmpro'},
-  tivimate:{icon:'', title:'Download TiviMate App', code:'3295550', url:'https://bit.ly/webtmate'}
-};
-
-// Render steps after both selections
-confirmBtn.addEventListener('click',()=>{
+confirmBtn.addEventListener('click', ()=>{
   const selectedApp = appSelect.value;
   const portalURL = providerSelect.value;
 
-  if(!selectedApp || !portalURL) return;
-  document.getElementById('selection-modal').style.display='none';
-
-  timeline.innerHTML = '';
-
-  const steps = [...commonSteps, {
-    icon:'', title: appStepData[selectedApp].title,
-    content:`<p style="margin-top:-4px;color:var(--muted)"><i>Ensure <b>Downloader</b> app is installed.</i></p>
-    <ol>
-      <li>Open My Apps → Launch Downloader.</li>
-      <li>Enter code <b>${appStepData[selectedApp].code}</b> or URL <a href="${appStepData[selectedApp].url}" target="_blank">${appStepData[selectedApp].url}</a> → Go → Install → Done → Delete APK.</li>
-    </ol>`
-  }];
-
-  if(selectedApp==='stbemu'){
-    steps.push({
-      icon:'', title:'Configure STBEmu',
-      content:`<ol>
-        <li>Portal URL: <a href="${portalURL}" target="_blank" style="color:#f87171;font-weight:700;">${portalURL}</a></li>
-        <li>Other configuration steps...</li>
-      </ol>`
-    });
-  } else if(selectedApp==='tivimate'){
-    steps.push({
-      icon:'', title:'Configure TiviMate',
-      content:`<ol>
-        <li>Portal URL: <a href="${portalURL}" target="_blank" style="color:#f87171;font-weight:700;">${portalURL}</a></li>
-        <li>Other configuration steps...</li>
-      </ol>`
-    });
+  if(!selectedApp || !portalURL){
+    alert('Please select both an App and a Provider before proceeding.');
+    return;
   }
 
-  // Render steps
-  steps.forEach((step,i)=>{
-    const div=document.createElement('div');
+  document.getElementById('selection-modal').style.display='none';
+  const timeline = document.getElementById('timeline');
+  timeline.innerHTML='';
+
+  // Step data
+  const appSteps = {
+    stbemu:[
+      {title:'Access Developer Options', content:`Settings → My Fire TV → About → click device name until "You are now a developer".`},
+      {title:'Allow Apps from Unknown Sources', content:`Settings → Device / My Fire TV → Developer Options → toggle Apps from Unknown Sources on → confirm.`},
+      {title:'Download STBEmu App', content:`Open My Apps → Launch Downloader → Enter code 9386189 or URL <a href="https://bit.ly/websmpro" target="_blank">https://bit.ly/websmpro</a> → Go → Install → Done → Delete APK.`},
+      {title:'Configure STBEmu', content:`<ol>
+        <li>Open STBEmu App</li>
+        <li>Press Menu → Settings → Profiles</li>
+        <li>Click "New Profile"</li>
+        <li>Enter Profile Name → OK</li>
+        <li>Enter Portal URL: <a href="${portalURL}" target="_blank">${portalURL}</a></li>
+        <li>Set STB Model: MAG 254</li>
+        <li>Screen Resolution: Auto unless sure of TV resolution</li>
+        <li>Note MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
+        <li>Save & Exit → Launch App → Select Profile → Start Streaming</li>
+      </ol>`}
+    ],
+    tivimate:[
+      {title:'Access Developer Options', content:`Settings → My Fire TV → About → click device name until "You are now a developer".`},
+      {title:'Allow Apps from Unknown Sources', content:`Settings → Device / My Fire TV → Developer Options → toggle Apps from Unknown Sources on → confirm.`},
+      {title:'Download TiviMate App', content:`Open My Apps → Launch Downloader → Enter code 3295550 or URL <a href="https://bit.ly/webtmate" target="_blank">https://bit.ly/webtmate</a> → Go → Install → Done → Delete APK.`},
+      {title:'Configure TiviMate', content:`<ol>
+        <li>Open TiviMate App</li>
+        <li>Main Menu → Settings</li>
+        <li>Add Playlist → Stalker Portal</li>
+        <li>Enter Portal URL: <a href="${portalURL}" target="_blank">${portalURL}</a></li>
+        <li>Provide MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
+        <li>Click Next → Done</li>
+        <li>Requires TiviMate Premium → <a href="https://tivimate.com" target="_blank">Upgrade</a></li>
+      </ol>`}
+    ]
+  };
+
+  const steps = appSteps[selectedApp];
+
+  steps.forEach((stepObj, i)=>{
+    const div = document.createElement('div');
     div.classList.add('step');
     if(i===0) div.classList.add('active');
-    div.innerHTML = `<div class="step-icon">${step.icon}</div>
-                     <div class="step-title">${step.title}</div>
-                     ${step.content}
+    div.innerHTML = `<div class="step-title">${stepObj.title}</div>
+                     <div class="step-content">${stepObj.content}</div>
                      ${i>0?'<button class="back-btn">Back</button>':''}
                      <button class="next-btn">${i===steps.length-1?'Exit':'Next'}</button>`;
     timeline.appendChild(div);
   });
 
-  // Setup navigation
+  // Navigation
   const stepElems = timeline.querySelectorAll('.step');
   stepElems.forEach((step,i)=>{
     const nextBtn = step.querySelector('.next-btn');
     const backBtn = step.querySelector('.back-btn');
 
     if(nextBtn){
-      nextBtn.addEventListener('click',()=>{
-        if(i===stepElems.length-1){
-          window.location.href='https://google.com';
-        } else {
+      nextBtn.addEventListener('click', ()=>{
+        if(i===stepElems.length-1) window.location.href='https://google.com';
+        else{
           step.classList.remove('active');
           stepElems[i+1].classList.add('active');
           stepElems[i+1].scrollIntoView({behavior:'smooth', block:'center'});
@@ -216,7 +207,7 @@ confirmBtn.addEventListener('click',()=>{
       });
     }
     if(backBtn){
-      backBtn.addEventListener('click',()=>{
+      backBtn.addEventListener('click', ()=>{
         step.classList.remove('active');
         stepElems[i-1].classList.add('active');
         stepElems[i-1].scrollIntoView({behavior:'smooth', block:'center'});
@@ -224,7 +215,6 @@ confirmBtn.addEventListener('click',()=>{
     }
   });
 
-  // Scroll to first step
   stepElems[0].scrollIntoView({behavior:'smooth', block:'center'});
 });
 </script>
