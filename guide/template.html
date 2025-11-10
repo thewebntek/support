@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Responsive HTML Template</title>
+  <meta name="description" content="A clean responsive HTML template with inline CSS and minimal JS." />
+
+  <style>
+    /* Reset & base */
+    :root{
+      --bg:#0f1724; --card:#0b1220; --muted:#98a0b3; --accent:#7c5cff; --accent-2:#00c2a8; --white:#f7fbff;
+      --radius:12px; --gap:1rem; --max-width:1100px;
+      font-synthesis: none;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:linear-gradient(180deg,var(--bg),#071023); color:var(--white); -webkit-font-smoothing:antialiased;
+      line-height:1.5; padding:32px 16px;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .wrap{width:100%; max-width:var(--max-width);}
+
+    /* Header / Nav */
+    header{display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:24px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:700}
+    .brand h1{font-size:18px;margin:0}
+    nav{display:flex; gap:12px; align-items:center}
+    .nav-link{color:var(--muted); text-decoration:none; padding:8px 12px; border-radius:8px; font-weight:500}
+    .nav-link:hover{color:var(--white); background:rgba(255,255,255,0.03)}
+
+    /* Mobile hamburger */
+    .hamburger{display:none; background:transparent; border:0; color:var(--white); font-size:22px}
+
+    /* Hero */
+    .hero{display:grid; grid-template-columns:1fr 420px; gap:var(--gap); align-items:start}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:20px; border-radius:var(--radius); box-shadow:0 6px 18px rgba(2,6,23,0.6);}
+    .hero h2{margin:0 0 8px 0; font-size:28px}
+    .hero p{margin:0 0 16px 0; color:var(--muted)}
+
+    /* Feature grid */
+    .features{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:16px}
+    .feature{padding:12px; border-radius:10px; background:rgba(255,255,255,0.02)}
+    .feature h4{margin:4px 0 6px 0}
+    .feature p{margin:0; color:var(--muted); font-size:14px}
+
+    /* Form & CTA */
+    .signup{display:flex; gap:10px; margin-top:12px}
+    .input{flex:1; padding:12px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.06); background:transparent; color:var(--white)}
+    .btn{padding:12px 16px; border-radius:10px; border:0; cursor:pointer; font-weight:600; background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#02101a}
+
+    /* Cards area */
+    .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:20px}
+    .mini{padding:12px; border-radius:10px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015))}
+    .muted{color:var(--muted)}
+
+    footer{margin-top:22px; color:var(--muted); font-size:13px; display:flex; align-items:center; justify-content:space-between; gap:12px}
+
+    /* Responsive tweaks */
+    @media (max-width:980px){
+      .hero{grid-template-columns:1fr}
+      .grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:640px){
+      body{padding:18px 12px}
+      header{align-items:flex-start}
+      nav{display:none}
+      .hamburger{display:block}
+      .features{grid-template-columns:1fr}
+      .grid{grid-template-columns:1fr}
+      .logo{width:40px;height:40px}
+      .hero h2{font-size:22px}
+    }
+
+    /* Utility */
+    .tiny{font-size:13px}
+    .row{display:flex;gap:12px;align-items:center}
+    .spaced{display:flex;justify-content:space-between;align-items:center}
+
+    /* Accessible focus states */
+    a:focus, button:focus, input:focus{outline:3px solid rgba(124,92,255,0.18); outline-offset:3px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">BP</div>
+        <div>
+          <h1>Bright UI</h1>
+          <div class="tiny muted">Minimal responsive template</div>
+        </div>
+      </div>
+
+      <nav aria-label="Main Navigation">
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#pricing" class="nav-link">Pricing</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+
+      <button class="hamburger" aria-expanded="false" aria-controls="mobileMenu" id="hamb">
+        ☰
+      </button>
+    </header>
+
+    <main>
+      <section class="hero card" aria-labelledby="heroTitle">
+        <div>
+          <h2 id="heroTitle">Build faster with a clean responsive template</h2>
+          <p>Single-file HTML with inline CSS — easy to copy, adapt, and deploy. Includes accessible focus states, responsive grid, and a small JS toggle for mobile navigation.</p>
+
+          <div class="features" id="features">
+            <div class="feature">
+              <strong>Responsive</strong>
+              <p>Adapts to any screen using CSS grid and media queries.</p>
+            </div>
+            <div class="feature">
+              <strong>Accessible</strong>
+              <p>Keyboard & focus-friendly controls and semantic markup.</p>
+            </div>
+            <div class="feature">
+              <strong>Lightweight</strong>
+              <p>No external deps — everything in one file with a tiny script.</p>
+            </div>
+          </div>
+
+          <form class="signup" onsubmit="event.preventDefault();alert('Thanks — demo submit!')" aria-label="Signup form">
+            <input class="input" type="email" placeholder="you@domain.com" required aria-label="Email address" />
+            <button class="btn" type="submit">Get started</button>
+          </form>
+        </div>
+
+        <aside class="card" style="position:relative">
+          <h3 style="margin-top:0">Quick preview</h3>
+          <div class="mini">
+            <div class="spaced"><strong>Plan</strong><span class="muted">Free</span></div>
+            <div style="margin-top:10px" class="muted">Up to 3 projects · Community support</div>
+          </div>
+
+          <div style="margin-top:12px" class="mini">
+            <div class="spaced"><strong>Pro</strong><span class="muted">$12/mo</span></div>
+            <div class="muted">Unlimited projects · Priority support</div>
+          </div>
+
+          <div style="margin-top:14px" class="tiny muted">Tip: change colors in the :root variables for a quick rebrand.</div>
+        </aside>
+      </section>
+
+      <section class="grid" aria-label="Additional cards">
+        <div class="card">
+          <h4 style="margin:0 0 8px 0">Card title</h4>
+          <p class="muted">Short description that explains this tile. Use these for features, metrics, or news.</p>
+        </div>
+
+        <div class="card">
+          <h4 style="margin:0 0 8px 0">Another card</h4>
+          <p class="muted">Supporting copy. Keep it concise for readability on smaller screens.</p>
+        </div>
+
+        <div class="card">
+          <h4 style="margin:0 0 8px 0">Resources</h4>
+          <p class="muted">Links, docs, or quick actions belong here to help users take the next step.</p>
+        </div>
+      </section>
+
+      <footer>
+        <div class="muted">© <span id="year"></span> Bright UI — built with ❤️</div>
+        <div class="row">
+          <a class="nav-link" href="#">Privacy</a>
+          <a class="nav-link" href="#">Terms</a>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Small JS for mobile menu toggle and dynamic year
+    (function(){
+      const hamb=document.getElementById('hamb');
+      const body=document.body;
+      const year=document.getElementById('year');
+      year.textContent=new Date().getFullYear();
+
+      hamb.addEventListener('click', ()=>{
+        const expanded = hamb.getAttribute('aria-expanded') === 'true';
+        hamb.setAttribute('aria-expanded', String(!expanded));
+
+        // create a simple mobile menu if not present
+        let menu = document.getElementById('mobileMenu');
+        if(!menu){
+          menu = document.createElement('nav');
+          menu.id='mobileMenu';
+          menu.style.cssText='position:fixed;right:16px;top:72px;background:rgba(2,6,23,0.95);padding:12px;border-radius:10px;box-shadow:0 8px 30px rgba(2,6,23,0.6)';
+          menu.innerHTML = '<a style="display:block;padding:8px 10px;color:var(--muted);text-decoration:none;border-radius:6px" href="#features">Features</a>'+
+                           '<a style="display:block;padding:8px 10px;color:var(--muted);text-decoration:none;border-radius:6px" href="#pricing">Pricing</a>'+
+                           '<a style="display:block;padding:8px 10px;color:var(--muted);text-decoration:none;border-radius:6px" href="#about">About</a>'+
+                           '<a style="display:block;padding:8px 10px;color:var(--muted);text-decoration:none;border-radius:6px" href="#contact">Contact</a>';
+          document.body.appendChild(menu);
+        }
+
+        menu.style.display = expanded ? 'none' : 'block';
+      });
+
+      // Close mobile menu on resize to large screens
+      window.addEventListener('resize', ()=>{
+        const menu = document.getElementById('mobileMenu');
+        if(window.innerWidth>640 && menu){ menu.style.display='none'; document.getElementById('hamb').setAttribute('aria-expanded','false'); }
+      });
+    })();
+  </script>
+</body>
+</html>
