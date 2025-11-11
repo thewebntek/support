@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Firestick Setup Guide</title>
+<title>Device Setup Guide</title>
 <style>
   :root {
     --bg: #0d1117;
@@ -119,13 +119,31 @@
   <div class="logo">
     <a href="#">WebNTek</a>
   </div>
-  <h1 id="guide-title">Firestick Setup Guide</h1>
+  <h1 id="guide-title">Device Setup Guide</h1>
 </header>
 
 <div class="timeline" id="timeline"></div>
 
+<!-- Device Modal -->
+<div class="modal" id="device-modal">
+  <div class="modal-content">
+    <h2>Select Device</h2>
+    <select id="device-select">
+      <option value="">-- Choose Device --</option>
+      <option value="firestick">Firestick</option>
+      <option value="android">Android</option>
+      <option value="ios">iOS (iPhone, iPad or Apple TV)</option>
+      <option value="infomir">Infomir Mag</option>
+      <option value="formuler">Formuler</option>
+      <option value="buzztv">Buzz TV</option>
+      <option value="other">Other</option>
+    </select>
+    <button id="device-confirm">Next</button>
+  </div>
+</div>
+
 <!-- App Modal -->
-<div class="modal" id="app-modal">
+<div class="modal" id="app-modal" style="display:none;">
   <div class="modal-content">
     <h2>Select App</h2>
     <select id="app-select">
@@ -141,14 +159,7 @@
 <div class="modal" id="provider-modal" style="display:none;">
   <div class="modal-content">
     <h2>Select Service Provider</h2>
-    <select id="provider-select">
-      <option value="">-- Choose Provider --</option>
-      <option value="https://glotv.me">Glotv</option>
-      <option value="https://p1.airce.io">Gold/Global</option>
-      <option value="https://smart4k.me">Smart4K</option>
-      <option value="http://sky.dittotvv.cc">Sky</option>
-      <option value="https://tv.stream4k.cc">Stream4K</option>
-    </select>
+    <select id="provider-select"></select>
     <button id="provider-confirm">Start Guide</button>
   </div>
 </div>
@@ -161,8 +172,25 @@
     if (e.key === 'F12') e.preventDefault();
   });
 
+  let selectedDevice = "";
   let selectedApp = "";
   let portalURL = "";
+
+  const deviceProviders = {
+    firestick: [
+      {name: "Glotv", url:"https://glotv.me"},
+      {name: "Gold/Global", url:"https://p1.airce.io"},
+      {name: "Smart4K", url:"https://smart4k.me"},
+      {name: "Sky", url:"http://sky.dittotvv.cc"},
+      {name: "Stream4K", url:"https://tv.stream4k.cc"}
+    ],
+    android: [],
+    ios: [],
+    infomir: [],
+    formuler: [],
+    buzztv: [],
+    other: []
+  };
 
   const commonSteps = [
     {title:'Access Developer Options', content:`<ol>
@@ -229,11 +257,33 @@
     });
   }
 
+  // Device selection
+  document.getElementById('device-confirm').addEventListener('click',()=>{
+    selectedDevice = document.getElementById('device-select').value;
+    if(!selectedDevice){ alert("Please select a device"); return; }
+    document.getElementById('device-modal').style.display='none';
+
+    if(deviceProviders[selectedDevice].length > 0){
+      // show app modal for Firestick
+      document.getElementById('app-modal').style.display='flex';
+    } else {
+      document.getElementById("timeline").innerHTML = `<div class="step"><h2>Setup Guide</h2><p>Setup guide for this device will be available soon.</p></div>`;
+    }
+  });
+
   // App selection
   document.getElementById('app-confirm').addEventListener('click',()=>{
     selectedApp = document.getElementById('app-select').value;
     if(!selectedApp){ alert("Please select an app"); return; }
     document.getElementById('app-modal').style.display='none';
+
+    // populate provider select dynamically
+    const providerSelect = document.getElementById('provider-select');
+    providerSelect.innerHTML = `<option value="">-- Choose Provider --</option>`;
+    deviceProviders[selectedDevice].forEach(p=>{
+      providerSelect.innerHTML += `<option value="${p.url}">${p.name}</option>`;
+    });
+
     document.getElementById('provider-modal').style.display='flex';
   });
 
