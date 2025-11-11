@@ -1,1 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Setup Guide</title>
+<style>
+:root {
+  --bg:#0b0f14;
+  --panel:#0f1720;
+  --muted:#9aa6b2;
+  --accent:#7dd3fc;
+  --accent-2:#60a5fa;
+  --radius:12px;
+  --max-width:1100px;
+  font-size:16px;
+}
+body.light {
+  --bg:#fefefe;
+  --panel:#fff;
+  --muted:#555;
+  --accent:#60a5fa;
+  --accent-2:#22d3ee;
+  color:#111;
+}
+* { box-sizing:border-box; }
+html,body { height:100%; margin:0; background:var(--bg); color:#e6eef6; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,"Helvetica Neue",Arial; transition: all 0.3s ease; scroll-behavior: smooth; }
+.container { max-width:var(--max-width); margin:28px auto; padding:20px; }
 
+header {
+  display:flex; align-items:center; justify-content:space-between; padding:12px; border-radius:var(--radius);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  backdrop-filter: blur(6px);
+}
+.logo { width:auto; text-align:center; padding:0 2ch; height:44px; border-radius:10px; background: linear-gradient(135deg,var(--accent),var(--accent-2)); display:flex; align-items:center; justify-content:center; font-weight:700; color:#022; box-shadow:0 4px 18px rgba(125,211,252,0.08);}
+.logo a { color:#022; text-decoration:none; display:block; width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
+.theme-toggle { cursor:pointer; font-size:20px; }
+
+h1,h2 { margin:0 0 10px 0; }
+p.lead { margin:0; color:var(--muted); }
+
+/* Timeline and steps */
+.timeline { 
+  position: relative; 
+  margin: 20px 0; 
+  padding-left: 10px;
+  border-left: 2px solid var(--accent-2); 
+}
+.step { margin-bottom: 30px; position: relative; display:none; opacity:0; transform:translateY(20px); transition: all 0.5s ease; }
+.step.active { display:block; opacity:1; transform:translateY(0); }
+.step-icon { position: absolute; left:0; top:0; display:none; }
+.step-title { font-size:1.2rem; font-weight:700; margin-bottom:6px; color:var(--accent); }
+
+.step ol {
+  margin:0;
+  padding-left:20px;
+  counter-reset:li;
+}
+.step ol li {
+  display:block;
+  margin-bottom:6px;
+  counter-increment: li;
+}
+.step ol li::before {
+  content: counter(li) ". ";
+  font-weight:700;
+  margin-right:6px;
+}
+
+button.next-btn, button.back-btn, button.exit-btn {
+  margin-top:12px; padding:6px 12px; border-radius:8px; background:var(--accent-2); color:#001018; font-weight:700; border:none; cursor:pointer;
+  margin-right: 8px;
+}
+
+footer { margin-top:26px; padding:18px; border-radius:12px; text-align:center; color:var(--muted); font-size:0.95rem; }
+
+.modal-bg {
+  position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; z-index:1000;
+}
+.modal {
+  background: var(--panel); padding:24px; border-radius:12px; max-width:400px; width:90%; text-align:center;
+}
+.modal select { width: 100%; padding:8px; border-radius:8px; margin:12px 0; }
+.modal button { padding:8px 12px; border-radius:10px; background:var(--accent-2); color:#001018; font-weight:700; border:none; cursor:pointer; }
+
+@media(max-width:640px) {
+  .step ol { padding-left:20px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><a href="#">WebNTek</a></div>
+  <div class="theme-toggle" id="theme-toggle">☀️</div>
+</header>
+
+<div class="container">
+<main>
+<section class="card" id="setup-guide" style="margin-top:20px;padding:24px;line-height:1.6">
+<h2 id="guide-title" style="margin-top:0">🔥 Setup Guide</h2>
+
+<!-- Device selection modal -->
+<div id="device-modal" class="modal-bg">
+  <div class="modal">
+    <h3>Select Your Device</h3>
+    <select id="device-select">
+      <option value="">-- Choose Device --</option>
+      <option value="firestick">Firestick</option>
+      <option value="android">Android</option>
+      <option value="ios">iOS (iPhone, iPad or Apple TV)</option>
+      <option value="infomir">Infomir Mag</option>
+      <option value="formuler">Formuler</option>
+      <option value="buzztv">Buzz TV</option>
+      <option value="other">Other</option>
+    </select>
+    <button id="device-confirm">Next</button>
+  </div>
+</div>
+
+<!-- App selection modal -->
+<div id="app-modal" class="modal-bg" style="display:none;">
+  <div class="modal">
+    <h3>Select App to Install</h3>
+    <select id="app-select">
+      <option value="">-- Choose App --</option>
+      <option value="stbemu">STBEmu (Free)</option>
+      <option value="tivimate">TiviMate (Premium)</option>
+    </select>
+    <button id="app-confirm">Next</button>
+  </div>
+</div>
+
+<!-- Provider selection modal -->
+<div id="provider-modal" class="modal-bg" style="display:none;">
+  <div class="modal">
+    <h3>Select Your Provider</h3>
+    <select id="provider-select">
+      <option value="">-- Choose Provider --</option>
+      <option value="https://glotv.me">Glotv</option>
+      <option value="https://p1.airce.io">Gold/Global</option>
+      <option value="https://smart4k.me">Smart4K</option>
+      <option value="http://sky.dittotvv.cc">Sky</option>
+      <option value="https://tv.stream4k.cc">Stream4K</option>
+    </select>
+    <button id="provider-confirm">Start Guide</button>
+  </div>
+</div>
+
+<div class="timeline" id="timeline"></div>
+
+</section>
+</main>
+
+<footer>
+  <div>© <span id="year">2025</span> WebnTek</div>
+</footer>
+</div>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// Theme toggle
+const themeToggle = document.getElementById('theme-toggle');
+themeToggle.addEventListener('click',()=>{
+  document.body.classList.toggle('light');
+  themeToggle.textContent = document.body.classList.contains('light') ? '🌙' : '☀️';
+});
+
+// Disable right click, copy, view source
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  if(e.ctrlKey && ['u','s','c'].includes(e.key.toLowerCase())) e.preventDefault();
+  if(e.key==='F12') e.preventDefault();
+});
+
+// Step data for Firestick apps
+const appSteps = {
+  stbemu:[
+    {title:'Access Developer Options', content:`<ol><li>Settings → My Fire TV → About</li><li>Click device name until "You are now a developer"</li></ol>`},
+    {title:'Allow Apps from Unknown Sources', content:`<ol><li>Settings → Device / My Fire TV → Developer Options</li><li>Toggle "Apps from Unknown Sources" on → confirm</li></ol>`},
+    {title:'Download STBEmu App', content:`<ol><li>Open My Apps → Launch Downloader → Enter code 9386189 or URL <a href="https://bit.ly/websmpro" target="_blank">https://bit.ly/websmpro</a> → Go → Install → Done → Delete APK</li></ol>`},
+    {title:'Configure STBEmu', content:`<ol>
+      <li>Open STBEmu App</li>
+      <li>Press Menu → Settings → Profiles</li>
+      <li>Click "New Profile"</li>
+      <li>Enter Profile Name → OK</li>
+      <li>Enter Portal URL: <a href="#" class="portal-link" target="_blank">portal will appear here</a></li>
+      <li>Set STB Model: MAG 254</li>
+      <li>Screen Resolution: Auto unless sure of TV resolution</li>
+      <li>Note MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
+      <li>Save & Exit → Launch App → Select Profile → Start Streaming</li>
+    </ol>`}
+  ],
+  tivimate:[
+    {title:'Access Developer Options', content:`<ol><li>Settings → My Fire TV → About</li><li>Click device name until "You are now a developer"</li></ol>`},
+    {title:'Allow Apps from Unknown Sources', content:`<ol><li>Settings → Device / My Fire TV → Developer Options</li><li>Toggle "Apps from Unknown Sources" on → confirm</li></ol>`},
+    {title:'Download TiviMate App', content:`<ol><li>Open My Apps → Launch Downloader → Enter code 3295550 or URL <a href="https://bit.ly/webtmate" target="_blank">https://bit.ly/webtmate</a> → Go → Install → Done → Delete APK</li></ol>`},
+    {title:'Configure TiviMate', content:`<ol>
+      <li>Open TiviMate App</li>
+      <li>Main Menu → Settings</li>
+      <li>Add Playlist → Stalker Portal</li>
+      <li>Enter Portal URL: <a href="#" class="portal-link" target="_blank">portal will appear here</a></li>
+      <li>Provide MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
+      <li>Click Next → Done</li>
+    </ol>
+    <p style="color:var(--muted); font-style:italic; margin-top:6px;">
+      Note: Requires TiviMate Premium → <a href="https://tivimate.com" target="_blank">Upgrade</a>
+    </p>`}
+  ]
+};
+
+// Variables
+let selectedDevice='', selectedApp='', selectedProvider='';
+
+// Step rendering
+const timeline = document.getElementById('timeline');
+
+function renderSteps(){
+  timeline.innerHTML='';
+  if(selectedDevice!=='firestick'){
+    timeline.innerHTML=`<div class="step active"><div class="step-title">Setup Guide</div>
+    <p>Setup guide for this device will be available soon.</p></div>`;
+    document.getElementById('guide-title').textContent=`Guide for ${selectedDevice}`;
+    return;
+  }
+  // Firestick steps
+  const steps = appSteps[selectedApp];
+  document.getElementById('guide-title').textContent=`Guide to setup ${selectedApp.charAt(0).toUpperCase()+selectedApp.slice(1)} on Firestick`;
+  steps.forEach((step,i)=>{
+    const div=document.createElement('div');
+    div.classList.add('step');
+    if(i===0) div.classList.add('active');
+    div.innerHTML=`<div class="step-title">${step.title}</div>${step.content}${i>0?'<button class="back-btn">Back</button>':''}<button class="next-btn">Next</button>`;
+    timeline.appendChild(div);
+  });
+  setupStepButtons();
+  injectPortalURL();
+}
+
+function setupStepButtons(){
+  const stepsEl = timeline.querySelectorAll('.step');
+  stepsEl.forEach((step,i)=>{
+    const nextBtn = step.querySelector('.next-btn');
+    if(nextBtn){
+      nextBtn.addEventListener('click',()=>{
+        step.classList.remove('active');
+        const nextStep = stepsEl[i+1];
+        if(nextStep){
+          nextStep.classList.add('active');
+          nextStep.scrollIntoView({behavior:'smooth', block:'center'});
+        }
+      });
+    }
+    const backBtn = step.querySelector('.back-btn');
+    if(backBtn){
+      backBtn.addEventListener('click',()=>{
+        step.classList.remove('active');
+        const prevStep = stepsEl[i-1];
+        if(prevStep){
+          prevStep.classList.add('active');
+          prevStep.scrollIntoView({behavior:'smooth', block:'center'});
+        }
+      });
+    }
+  });
+}
+
+function injectPortalURL(){
+  const links = document.querySelectorAll('.portal-link');
+  links.forEach(link=>{
+    link.textContent=selectedProvider;
+    link.href=selectedProvider;
+  });
+}
+
+// Modal logic
+const deviceModal = document.getElementById('device-modal');
+const appModal = document.getElementById('app-modal');
+const providerModal = document.getElementById('provider-modal');
+
+document.getElementById('device-confirm').addEventListener('click',()=>{
+  selectedDevice=document.getElementById('device-select').value;
+  if(!selectedDevice) return alert('Please select a device');
+  deviceModal.style.display='none';
+  if(selectedDevice==='firestick'){
+    appModal.style.display='flex';
+  } else {
+    providerModal.style.display='flex';
+  }
+});
+
+document.getElementById('app-confirm').addEventListener('click',()=>{
+  selectedApp=document.getElementById('app-select').value;
+  if(!selectedApp) return alert('Please select an app');
+  appModal.style.display='none';
+  providerModal.style.display='flex';
+});
+
+document.getElementById('provider-confirm').addEventListener('click',()=>{
+  selectedProvider=document.getElementById('provider-select').value;
+  if(!selectedProvider) return alert('Please select a provider');
+  providerModal.style.display='none';
+  renderSteps();
+});
+</script>
+</body>
+</html>
