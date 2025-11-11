@@ -75,7 +75,6 @@
   .step h2 {
     font-size: 1.1rem;
     margin: 0 0 10px;
-    color: var(--accent);
   }
   .step ol { 
     margin: 0; 
@@ -135,7 +134,7 @@
       <option value="ios">iOS (iPhone, iPad or Apple TV)</option>
       <option value="infomir">Infomir Mag</option>
       <option value="formuler">Formuler</option>
-      <option value="buzztv">Buzz TV</option>
+      <option value="buzz">Buzz TV</option>
       <option value="other">Other</option>
     </select>
     <button id="device-confirm">Next</button>
@@ -146,11 +145,8 @@
 <div class="modal" id="app-modal" style="display:none;">
   <div class="modal-content">
     <h2>Select App</h2>
-    <select id="app-select">
-      <option value="">-- Choose App --</option>
-      <option value="stbemu">STBEmu (Free)</option>
-      <option value="tivimate">TiviMate (Premium)</option>
-    </select>
+    <select id="app-select"></select>
+    <button id="app-back">Back</button>
     <button id="app-confirm">Next</button>
   </div>
 </div>
@@ -158,8 +154,9 @@
 <!-- Provider Modal -->
 <div class="modal" id="provider-modal" style="display:none;">
   <div class="modal-content">
-    <h2>Select Service Provider</h2>
+    <h2 id="provider-title">Select Service Provider</h2>
     <select id="provider-select"></select>
+    <button id="provider-back">Back</button>
     <button id="provider-confirm">Start Guide</button>
   </div>
 </div>
@@ -176,21 +173,23 @@
   let selectedApp = "";
   let portalURL = "";
 
-  const deviceProviders = {
-    firestick: [
-      {name: "Glotv", url:"https://glotv.me"},
-      {name: "Gold/Global", url:"https://p1.airce.io"},
-      {name: "Smart4K", url:"https://smart4k.me"},
-      {name: "Sky", url:"http://sky.dittotvv.cc"},
-      {name: "Stream4K", url:"https://tv.stream4k.cc"}
-    ],
+  const deviceApps = {
+    firestick: ["stbemu","tivimate"],
     android: [],
     ios: [],
     infomir: [],
     formuler: [],
-    buzztv: [],
+    buzz: [],
     other: []
   };
+
+  const providerList = [
+    {name:"Glotv", url:"https://glotv.me"},
+    {name:"Gold/Global", url:"https://p1.airce.io"},
+    {name:"Smart4K", url:"https://smart4k.me"},
+    {name:"Sky", url:"http://sky.dittotvv.cc"},
+    {name:"Stream4K", url:"https://tv.stream4k.cc"}
+  ];
 
   const commonSteps = [
     {title:'Access Developer Options', content:`<ol>
@@ -243,7 +242,6 @@
     steps.forEach(s=>{
       const stepDiv = document.createElement("div");
       stepDiv.className = "step";
-
       let content = s.content;
       if(portalURL){
         content = content.replace(
@@ -251,7 +249,6 @@
           `<a href="${portalURL}" class="portal-link" target="_blank">${portalURL}</a>`
         );
       }
-
       stepDiv.innerHTML = `<h2>${s.title}</h2>${content}`;
       timeline.appendChild(stepDiv);
     });
@@ -263,12 +260,26 @@
     if(!selectedDevice){ alert("Please select a device"); return; }
     document.getElementById('device-modal').style.display='none';
 
-    if(deviceProviders[selectedDevice].length > 0){
-      // show app modal for Firestick
+    const apps = deviceApps[selectedDevice];
+    const appSelect = document.getElementById('app-select');
+    appSelect.innerHTML = '';
+    if(apps.length){
+      apps.forEach(a=>{
+        const opt = document.createElement('option');
+        opt.value = a;
+        opt.textContent = a === 'stbemu' ? 'STBEmu (Free)' : 'TiviMate (Premium)';
+        appSelect.appendChild(opt);
+      });
       document.getElementById('app-modal').style.display='flex';
     } else {
-      document.getElementById("timeline").innerHTML = `<div class="step"><h2>Setup Guide</h2><p>Setup guide for this device will be available soon.</p></div>`;
+      const timeline = document.getElementById('timeline');
+      timeline.innerHTML = `<div class="step"><h2>Setup guide for this device will be available soon</h2></div>`;
     }
+  });
+
+  document.getElementById('app-back').addEventListener('click',()=>{
+    document.getElementById('app-modal').style.display='none';
+    document.getElementById('device-modal').style.display='flex';
   });
 
   // App selection
@@ -277,14 +288,23 @@
     if(!selectedApp){ alert("Please select an app"); return; }
     document.getElementById('app-modal').style.display='none';
 
-    // populate provider select dynamically
+    // Populate providers dynamically
     const providerSelect = document.getElementById('provider-select');
-    providerSelect.innerHTML = `<option value="">-- Choose Provider --</option>`;
-    deviceProviders[selectedDevice].forEach(p=>{
-      providerSelect.innerHTML += `<option value="${p.url}">${p.name}</option>`;
+    providerSelect.innerHTML = '<option value="">-- Choose Provider --</option>';
+    providerList.forEach(p=>{
+      const opt = document.createElement('option');
+      opt.value = p.url;
+      opt.textContent = p.name;
+      providerSelect.appendChild(opt);
     });
 
+    document.getElementById('provider-title').textContent = "Select Service Provider";
     document.getElementById('provider-modal').style.display='flex';
+  });
+
+  document.getElementById('provider-back').addEventListener('click',()=>{
+    document.getElementById('provider-modal').style.display='none';
+    document.getElementById('app-modal').style.display='flex';
   });
 
   // Provider selection
@@ -295,6 +315,7 @@
     document.getElementById('provider-modal').style.display='none';
     renderSteps(selectedApp);
   });
+
 </script>
 
 </body>
