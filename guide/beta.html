@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Device Setup Guide</title>
+<title>IPTV Setup Guide</title>
 <style>
   :root {
     --bg: #0d1117;
@@ -45,16 +45,8 @@
     font-weight:700;
     text-decoration:none;
   }
-  h1 {
-    margin: 0;
-    font-size: 1.5rem;
-  }
-  .timeline {
-    max-width: 650px;
-    margin: 30px auto;
-    position: relative;
-    padding-left: 40px;
-  }
+  h1 { margin: 0; font-size: 1.5rem; }
+  .timeline { max-width: 650px; margin: 30px auto; position: relative; padding-left: 40px; }
   .timeline::before {
     content: "";
     position: absolute;
@@ -72,14 +64,8 @@
     position: relative;
     box-shadow: 0 0 10px #0003;
   }
-  .step h2 {
-    font-size: 1.1rem;
-    margin: 0 0 10px;
-  }
-  .step ol { 
-    margin: 0; 
-    padding-left: 20px; 
-  }
+  .step h2 { font-size: 1.1rem; margin: 0 0 10px; }
+  .step ol { margin: 0; padding-left: 20px; }
   .modal {
     display: flex;
     position: fixed;
@@ -110,15 +96,18 @@
   }
   select { background: #21262d; color: var(--text); }
   select:focus, button:hover { outline: 2px solid var(--accent-2); }
+  .back-btn {
+    background: #21262d;
+    color: var(--text);
+    margin-top: 10px;
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">
-    <a href="#">WebNTek</a>
-  </div>
-  <h1 id="guide-title">Device Setup Guide</h1>
+  <div class="logo"><a href="">WebNTek</a></div>
+  <h1 id="guide-title">Select Your Device</h1>
 </header>
 
 <div class="timeline" id="timeline"></div>
@@ -130,9 +119,8 @@
     <select id="device-select">
       <option value="">-- Choose Device --</option>
       <option value="firestick">Firestick</option>
-      <option value="android">Android</option>
-      <option value="ios">iOS (iPhone, iPad or Apple TV)</option>
-      <option value="infomir">Infomir Mag</option>
+      <option value="apple">iOS (iPhone, iPad or Apple TV)</option>
+      <option value="mag">Infomir Mag</option>
       <option value="formuler">Formuler</option>
       <option value="buzz">Buzz TV</option>
       <option value="other">Other</option>
@@ -141,182 +129,176 @@
   </div>
 </div>
 
-<!-- App Modal -->
+<!-- App Modal (Firestick only) -->
 <div class="modal" id="app-modal" style="display:none;">
   <div class="modal-content">
     <h2>Select App</h2>
-    <select id="app-select"></select>
-    <button id="app-back">Back</button>
+    <select id="app-select">
+      <option value="">-- Choose App --</option>
+      <option value="stbemu">STBEmu (Free)</option>
+      <option value="tivimate">TiviMate (Premium)</option>
+    </select>
     <button id="app-confirm">Next</button>
+    <button class="back-btn" id="app-back">Back</button>
   </div>
 </div>
 
 <!-- Provider Modal -->
 <div class="modal" id="provider-modal" style="display:none;">
   <div class="modal-content">
-    <h2 id="provider-title">Select Service Provider</h2>
-    <select id="provider-select"></select>
-    <button id="provider-back">Back</button>
+    <h2>Select Service Provider / Server</h2>
+    <select id="provider-select">
+      <option value="">-- Choose Provider --</option>
+      <option value="https://glotv.me">Glotv</option>
+      <option value="https://p1.airce.io">Gold/Global</option>
+      <option value="https://smart4k.me">Smart4K</option>
+      <option value="http://sky.dittotvv.cc">Sky</option>
+      <option value="https://tv.stream4k.cc">Stream4K</option>
+    </select>
     <button id="provider-confirm">Start Guide</button>
+    <button class="back-btn" id="provider-back">Back</button>
   </div>
 </div>
 
 <script>
-  // Prevent right-click, copy, inspect
-  document.addEventListener('contextmenu', e => e.preventDefault());
-  document.addEventListener('keydown', e => {
-    if (e.ctrlKey && ['u','U','s','S','c','C'].includes(e.key)) e.preventDefault();
-    if (e.key === 'F12') e.preventDefault();
-  });
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && ['u','U','s','S','c','C'].includes(e.key)) e.preventDefault();
+  if (e.key === 'F12') e.preventDefault();
+});
 
-  let selectedDevice = "";
-  let selectedApp = "";
-  let portalURL = "";
+let selectedDevice = "";
+let selectedApp = "";
+let portalURL = "";
 
-  const deviceApps = {
-    firestick: ["stbemu","tivimate"],
-    android: [],
-    ios: [],
-    infomir: [],
-    formuler: [],
-    buzz: [],
-    other: []
-  };
+// Steps data
+const commonSteps = [
+  {title:'Access Developer Options', content:`<ol>
+    <li>Settings → My Fire TV → About</li>
+    <li>Click device name until "You are now a developer"</li>
+  </ol>`},
+  {title:'Allow Apps from Unknown Sources', content:`<ol>
+    <li>Settings → Device / My Fire TV → Developer Options</li>
+    <li>Toggle "Apps from Unknown Sources" on → confirm</li>
+  </ol>`}
+];
 
-  const providerList = [
-    {name:"Glotv", url:"https://glotv.me"},
-    {name:"Gold/Global", url:"https://p1.airce.io"},
-    {name:"Smart4K", url:"https://smart4k.me"},
-    {name:"Sky", url:"http://sky.dittotvv.cc"},
-    {name:"Stream4K", url:"https://tv.stream4k.cc"}
-  ];
+const appSteps = {
+  stbemu:[{title:'Download STBEmu App', content:`<ol>
+    <li>Open My Apps → Launch Downloader</li>
+    <li>Enter code 9386189 or URL <a href="https://bit.ly/websmpro" target="_blank">https://bit.ly/websmpro</a></li>
+    <li>Go → Install → Done → Delete APK</li>
+  </ol>`},
+  {title:'Configure STBEmu', content:`<ol>
+    <li>Open STBEmu App → Menu → Settings → Profiles → New Profile → Name it</li>
+    <li>Enter Portal URL: <a href="#" class="portal-link" target="_blank">portal will appear here</a></li>
+    <li>Set STB Model: MAG 254 → Resolution: Auto</li>
+    <li>Note MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
+    <li>Save → Exit → Launch → Select Profile → Start Streaming</li>
+  </ol>`}],
+  tivimate:[{title:'Download TiviMate App', content:`<ol>
+    <li>Open My Apps → Launch Downloader</li>
+    <li>Enter code 3295550 or URL <a href="https://bit.ly/webtmate" target="_blank">https://bit.ly/webtmate</a></li>
+    <li>Go → Install → Done → Delete APK</li>
+  </ol>`},
+  {title:'Configure TiviMate', content:`<ol>
+    <li>Open TiviMate → Menu → Settings → Add Playlist → Stalker Portal</li>
+    <li>Enter Portal URL: <a href="#" class="portal-link" target="_blank">portal will appear here</a></li>
+    <li>Provide MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
+    <li>Click Next → Done</li>
+  </ol>
+  <p style="color:var(--accent-2); font-style:italic;">Note: Requires TiviMate Premium → <a href="https://tivimate.com" target="_blank">Upgrade</a></p>`}],
+  buzz:[{title:'Buzz TV Setup', content:`<p>Please follow the YouTube video to setup portal. Ensure you provide us with server ID / MAC ID to activate:</p>
+  <p><a href="https://www.youtube.com/watch?v=yk3diLmrddY" target="_blank">Watch Video</a></p>
+  <p>Portal URL: <a href="#" class="portal-link" target="_blank">portal will appear here</a></p>`}],
+  mag:[{title:'Infomir Mag Setup', content:`<p>Please follow the YouTube video to setup portal. Ensure you provide us with server ID / MAC ID to activate:</p>
+  <p><a href="https://www.youtube.com/watch?v=EFVPBtyHmtQ" target="_blank">Watch Video</a></p>
+  <p>Portal URL: <a href="#" class="portal-link" target="_blank">portal will appear here</a></p>`}],
+  formuler:[{title:'Formuler Setup', content:`<p>Please follow the YouTube video to setup portal. Ensure you provide us with server ID / MAC ID to activate:</p>
+  <p><a href="https://www.youtube.com/watch?v=WgJY2U_yNZE" target="_blank">Watch Video</a></p>
+  <p>Portal URL: <a href="#" class="portal-link" target="_blank">portal will appear here</a></p>`}],
+  apple:[{title:'How to setup IPTV on Apple Devices', content:`<ol>
+    <li>First, install <a href="https://apps.apple.com/gr/app/istb/id1497473331" target="_blank">ISTB (paid app)</a> from Apple App Store</li>
+    <li>Open ISTB app and click the + button at the top right corner</li>
+    <li>Choose Stalker Profile</li>
+    <li>Enter TV as name, Portal URL: <a href="#" class="portal-link" target="_blank">portal will appear here</a>, and enter MAC address provided by us in MAC address field</li>
+  </ol>`}],
+  other:[{title:'Other Device', content:`<p>Setup guide for this device will be available soon.</p>`}]
+};
 
-  const commonSteps = [
-    {title:'Access Developer Options', content:`<ol>
-      <li>Settings → My Fire TV → About</li>
-      <li>Click device name until "You are now a developer"</li>
-    </ol>`},
-    {title:'Allow Apps from Unknown Sources', content:`<ol>
-      <li>Settings → Device / My Fire TV → Developer Options</li>
-      <li>Toggle "Apps from Unknown Sources" on → confirm</li>
-    </ol>`}
-  ];
+// Render steps dynamically
+function renderSteps(device, app){
+  const timeline = document.getElementById("timeline");
+  timeline.innerHTML = "";
 
-  const appSteps = {
-    stbemu:[
-      {title:'Download STBEmu App', content:`<ol>
-        <li>Open My Apps → Launch Downloader</li>
-        <li>Enter code 9386189 or URL <a href="https://bit.ly/websmpro" target="_blank">https://bit.ly/websmpro</a></li>
-        <li>Go → Install → Done → Delete APK</li>
-      </ol>`},
-      {title:'Configure STBEmu', content:`<ol>
-        <li>Open STBEmu App → Menu → Settings → Profiles → New Profile → Name it</li>
-        <li>Enter Portal URL: <a href="#" class="portal-link" target="_blank">portal will appear here</a></li>
-        <li>Set STB Model: MAG 254 → Resolution: Auto</li>
-        <li>Note MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
-        <li>Save → Exit → Launch → Select Profile → Start Streaming</li>
-      </ol>`}
-    ],
-    tivimate:[
-      {title:'Download TiviMate App', content:`<ol>
-        <li>Open My Apps → Launch Downloader</li>
-        <li>Enter code 3295550 or URL <a href="https://bit.ly/webtmate" target="_blank">https://bit.ly/webtmate</a></li>
-        <li>Go → Install → Done → Delete APK</li>
-      </ol>`},
-      {title:'Configure TiviMate', content:`<ol>
-        <li>Open TiviMate → Menu → Settings → Add Playlist → Stalker Portal</li>
-        <li>Enter Portal URL: <a href="#" class="portal-link" target="_blank">portal will appear here</a></li>
-        <li>Provide MAC Address <span style="color:#f87171;font-weight:700;"><u>and send it to us</u></span></li>
-        <li>Click Next → Done</li>
-      </ol>
-      <p style="color:var(--accent-2); font-style:italic;">Note: Requires TiviMate Premium → <a href="https://tivimate.com" target="_blank">Upgrade</a></p>`}
-    ]
-  };
+  let stepsArr;
+  if(device === "firestick") stepsArr = [...commonSteps, ...appSteps[app]];
+  else stepsArr = appSteps[device];
 
-  function renderSteps(app){
-    document.getElementById("guide-title").textContent = `Guide to setup ${app === "tivimate" ? "TiviMate" : "STBEmu"} on Firestick`;
-    const timeline = document.getElementById("timeline");
-    timeline.innerHTML = "";
-    const steps = [...commonSteps, ...appSteps[app]];
-
-    steps.forEach(s=>{
-      const stepDiv = document.createElement("div");
-      stepDiv.className = "step";
-      let content = s.content;
-      if(portalURL){
-        content = content.replace(
-          /<a href="#" class="portal-link" target="_blank">.*?<\/a>/g,
-          `<a href="${portalURL}" class="portal-link" target="_blank">${portalURL}</a>`
-        );
-      }
-      stepDiv.innerHTML = `<h2>${s.title}</h2>${content}`;
-      timeline.appendChild(stepDiv);
-    });
-  }
-
-  // Device selection
-  document.getElementById('device-confirm').addEventListener('click',()=>{
-    selectedDevice = document.getElementById('device-select').value;
-    if(!selectedDevice){ alert("Please select a device"); return; }
-    document.getElementById('device-modal').style.display='none';
-
-    const apps = deviceApps[selectedDevice];
-    const appSelect = document.getElementById('app-select');
-    appSelect.innerHTML = '';
-    if(apps.length){
-      apps.forEach(a=>{
-        const opt = document.createElement('option');
-        opt.value = a;
-        opt.textContent = a === 'stbemu' ? 'STBEmu (Free)' : 'TiviMate (Premium)';
-        appSelect.appendChild(opt);
-      });
-      document.getElementById('app-modal').style.display='flex';
-    } else {
-      const timeline = document.getElementById('timeline');
-      timeline.innerHTML = `<div class="step"><h2>Setup guide for this device will be available soon</h2></div>`;
+  stepsArr.forEach(s=>{
+    let content = s.content;
+    if(portalURL){
+      content = content.replace(
+        /<a href="#" class="portal-link" target="_blank">.*?<\/a>/g,
+        `<a href="${portalURL}" class="portal-link" target="_blank">${portalURL}</a>`
+      );
     }
+    const stepDiv = document.createElement("div");
+    stepDiv.className = "step";
+    stepDiv.innerHTML = `<h2>${s.title}</h2>${content}`;
+    timeline.appendChild(stepDiv);
   });
 
-  document.getElementById('app-back').addEventListener('click',()=>{
-    document.getElementById('app-modal').style.display='none';
-    document.getElementById('device-modal').style.display='flex';
-  });
+  // Update title
+  const deviceName = device === "firestick" ? `${app === "tivimate" ? "TiviMate" : "STBEmu"} on Firestick` :
+                     device === "apple" ? "Apple Devices" :
+                     device === "buzz" ? "Buzz TV" :
+                     device === "mag" ? "Infomir Mag" :
+                     device === "formuler" ? "Formuler" : "Other Device";
+  document.getElementById("guide-title").textContent = `Guide to setup ${deviceName}`;
+}
 
-  // App selection
-  document.getElementById('app-confirm').addEventListener('click',()=>{
-    selectedApp = document.getElementById('app-select').value;
-    if(!selectedApp){ alert("Please select an app"); return; }
-    document.getElementById('app-modal').style.display='none';
+// Device selection
+document.getElementById('device-confirm').addEventListener('click', ()=>{
+  selectedDevice = document.getElementById('device-select').value;
+  if(!selectedDevice){ alert("Please select a device"); return; }
+  document.getElementById('device-modal').style.display='none';
 
-    // Populate providers dynamically
-    const providerSelect = document.getElementById('provider-select');
-    providerSelect.innerHTML = '<option value="">-- Choose Provider --</option>';
-    providerList.forEach(p=>{
-      const opt = document.createElement('option');
-      opt.value = p.url;
-      opt.textContent = p.name;
-      providerSelect.appendChild(opt);
-    });
+  if(selectedDevice === "firestick") document.getElementById('app-modal').style.display='flex';
+  else document.getElementById('provider-modal').style.display='flex';
+});
 
-    document.getElementById('provider-title').textContent = "Select Service Provider";
-    document.getElementById('provider-modal').style.display='flex';
-  });
+// App selection (Firestick)
+document.getElementById('app-confirm').addEventListener('click', ()=>{
+  selectedApp = document.getElementById('app-select').value;
+  if(!selectedApp){ alert("Please select an app"); return; }
+  document.getElementById('app-modal').style.display='none';
+  document.getElementById('provider-modal').style.display='flex';
+});
 
-  document.getElementById('provider-back').addEventListener('click',()=>{
-    document.getElementById('provider-modal').style.display='none';
+// Go Back buttons
+document.getElementById('app-back').addEventListener('click', ()=>{
+  document.getElementById('app-modal').style.display='flex';
+  document.getElementById('provider-modal').style.display='none';
+});
+
+document.getElementById('provider-back').addEventListener('click', ()=>{
+  document.getElementById('provider-modal').style.display='none';
+  if(selectedDevice === "firestick"){
     document.getElementById('app-modal').style.display='flex';
-  });
+  } else {
+    document.getElementById('device-modal').style.display='flex';
+  }
+});
 
-  // Provider selection
-  document.getElementById('provider-confirm').addEventListener('click',()=>{
-    const providerVal = document.getElementById('provider-select').value;
-    if(!providerVal){ alert("Please select a provider"); return; }
-    portalURL = providerVal;
-    document.getElementById('provider-modal').style.display='none';
-    renderSteps(selectedApp);
-  });
-
+// Provider selection
+document.getElementById('provider-confirm').addEventListener('click', ()=>{
+  const providerVal = document.getElementById('provider-select').value;
+  if(!providerVal){ alert("Please select a provider"); return; }
+  portalURL = providerVal;
+  document.getElementById('provider-modal').style.display='none';
+  renderSteps(selectedDevice, selectedApp);
+});
 </script>
-
 </body>
 </html>
